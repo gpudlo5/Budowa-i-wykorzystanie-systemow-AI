@@ -1,0 +1,11 @@
+task_id,title,description,department,assigned_to,frequency,next_run,due_date,priority,status,related_project_id
+RT001,Weryfikacja faktur od dostawców,Sprawdzenie zgodności faktur z zamówieniami i potwierdzeniami wykonania usług,Finanse,E001,daily,2026-11-23,2026-11-23,high,active,P001
+RT002,Uzgadnianie sald kontrahentów,Comiesięczne porównanie sald i wyjaśnianie różnic z kontrahentami,Finanse,E001,monthly,2026-12-01,2026-12-03,high,active,
+RT003,Przygotowanie raportu VAT,Zebranie danych i przygotowanie raportu VAT za zakończony miesiąc,Finanse,E001,monthly,2026-12-01,2026-12-05,high,active,
+RT004,Kontrola płatności dostawców,Sprawdzenie terminów płatności i identyfikacja faktur wymagających wyjaśnienia,Finanse,E001,weekly,2026-11-27,2026-11-27,medium,active,
+RT005,Archiwizacja dokumentów finansowych,Porządkowanie i archiwizowanie dokumentów po zakończeniu okresu rozliczeniowego,Finanse,E001,monthly,2026-12-02,2026-12-05,low,active,
+RT006,Kontrola otwartych reklamacji,Przegląd nierozwiązanych reklamacji i aktualizacja ich statusów,Obsluga klienta,E003,weekly,2026-11-27,2026-11-27,medium,active,P002
+RT007,Przegląd harmonogramu transportów,Sprawdzenie planowanych transportów i identyfikacja możliwych opóźnień,Operacje,E004,daily,2026-11-23,2026-11-23,high,active,P003
+RT008,Kontrola dostępności floty,Weryfikacja dostępności pojazdów na nadchodzący tydzień,Operacje,E004,weekly,2026-11-27,2026-11-27,medium,active,P003
+RT009,Przegląd zgłoszeń IT,Analiza otwartych zgłoszeń i ustalanie priorytetów ich obsługi,IT,E005,weekly,2026-11-27,2026-11-27,medium,active,
+RT010,Przegląd dokumentacji pracowniczej,Kontrola kompletności dokumentacji kadrowej,HR,E006,monthly,2026-12-01,2026-12-05,low,active,
