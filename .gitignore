@@ -17,3 +17,4 @@ chroma_db/
 .DS_Store
 .vscode/
 data/processed/audit_log.jsonl
+data/processed/handovers/
