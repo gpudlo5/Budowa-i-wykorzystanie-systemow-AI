@@ -16,3 +16,4 @@ chroma_db/
 # Editor and operating system
 .DS_Store
 .vscode/
+data/processed/audit_log.jsonl

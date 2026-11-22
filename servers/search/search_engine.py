@@ -1,4 +1,3 @@
-
 import csv
 from pathlib import Path
 
@@ -6,12 +5,12 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 
-# Sciezki projektu
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_FILE = BASE_DIR / "data" / "raw" / "documents.csv"
+EMPLOYEES_FILE = BASE_DIR / "data" / "raw" / "employees.csv"
+ACL_FILE = BASE_DIR / "data" / "raw" / "acl.csv"
 DB_DIR = BASE_DIR / "data" / "processed" / "chroma_db"
 
-# Model embeddingowy
 MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 
@@ -27,12 +26,52 @@ class SearchEngine:
             name="company_documents"
         )
 
-    def load_documents(self):
-        with open(DATA_FILE, "r", encoding="utf-8-sig") as file:
-            reader = csv.DictReader(file)
-            documents = list(reader)
+    def load_csv(self, file_path):
+        with open(file_path, "r", encoding="utf-8-sig") as file:
+            return list(csv.DictReader(file))
 
-        return documents
+    def load_documents(self):
+        return self.load_csv(DATA_FILE)
+
+    def get_employee(self, employee_id):
+        employees = self.load_csv(EMPLOYEES_FILE)
+
+        employee = next(
+            (
+                employee
+                for employee in employees
+                if employee["employee_id"] == employee_id
+            ),
+            None,
+        )
+
+        if employee is None:
+            raise ValueError(
+                f"Nie znaleziono pracownika: {employee_id}"
+            )
+
+        return employee
+
+    def check_access(self, user_id, doc_id):
+        """
+        Sprawdza, czy pracownik ma dostęp do wskazanego dokumentu
+        na podstawie roli i pliku ACL.
+        """
+        employee = self.get_employee(user_id)
+        employee_role = employee["role_id"]
+
+        acl_entries = self.load_csv(ACL_FILE)
+
+        for entry in acl_entries:
+            if entry["doc_id"] == doc_id:
+                allowed_roles = [
+                    role.strip()
+                    for role in entry["allowed_roles"].split(";")
+                ]
+
+                return employee_role in allowed_roles
+
+        return False
 
     def index_documents(self):
         documents = self.load_documents()
@@ -66,40 +105,22 @@ class SearchEngine:
 
         print(f"Zindeksowano dokumentow: {len(documents)}")
 
-
     def search(self, question, employee_id, n_results=3):
-        # Wczytanie pracownikow
-        employees_file = BASE_DIR / "data" / "raw" / "employees.csv"
+        # Najpierw sprawdzamy, czy pracownik istnieje.
+        self.get_employee(employee_id)
 
-        with open(employees_file, "r", encoding="utf-8-sig") as file:
-            employees = list(csv.DictReader(file))
-
-        employee = next(
-            (e for e in employees if e["employee_id"] == employee_id),
-            None
-        )
-
-        if employee is None:
-            raise ValueError("Nie znaleziono pracownika.")
-
-        employee_role = employee["role_id"]
-
-        # Wczytanie uprawnien dokumentow
-        acl_file = BASE_DIR / "data" / "raw" / "acl.csv"
-
-        with open(acl_file, "r", encoding="utf-8-sig") as file:
-            acl_entries = list(csv.DictReader(file))
+        # Pobieramy dokumenty, do których pracownik ma dostęp.
+        documents = self.load_documents()
 
         allowed_doc_ids = [
-            entry["doc_id"]
-            for entry in acl_entries
-            if employee_role in entry["allowed_roles"].split(";")
+            doc["doc_id"]
+            for doc in documents
+            if self.check_access(employee_id, doc["doc_id"])
         ]
 
         if not allowed_doc_ids:
             return []
 
-        # Wyszukiwanie semantyczne tylko w dokumentach dostepnych dla pracownika
         query_embedding = self.model.encode([question]).tolist()
 
         results = self.collection.query(
@@ -107,11 +128,10 @@ class SearchEngine:
             n_results=n_results,
             where={
                 "doc_id": {"$in": allowed_doc_ids}
-            }
+            },
         )
 
         return results
-
 
 
 if __name__ == "__main__":
@@ -123,10 +143,11 @@ if __name__ == "__main__":
 
     print("\nWYNIKI WYSZUKIWANIA:\n")
 
-    for document, metadata in zip(
-        results["documents"][0],
-        results["metadatas"][0],
-    ):
-        print(f"Tytul: {metadata['title']}")
-        print(f"Tresc: {document}")
-        print("-" * 50)
+    if results and results.get("documents") and results["documents"][0]:
+        for document, metadata in zip(
+            results["documents"][0],
+            results["metadatas"][0],
+        ):
+            print(f"Tytul: {metadata['title']}")
+            print(f"Tresc: {document}")
+            print("-" * 50)
