@@ -18,3 +18,15 @@ chroma_db/
 .vscode/
 data/processed/audit_log.jsonl
 data/processed/handovers/
+
+# Lokalna konfiguracja Claude Desktop (zawiera ścieżki z Twojego komputera)
+claude_desktop_config.json
+
+# Inne środowiska i edytory
+venv/
+.idea/
+Thumbs.db
+
+# Archiwa i logi
+*.zip
+*.log
