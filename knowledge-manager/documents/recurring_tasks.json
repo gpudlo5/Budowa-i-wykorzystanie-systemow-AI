@@ -1,0 +1,7 @@
+[
+  {"task_id":"RT01","name":"Zamknięcie miesiąca","owner_id":"E002","collaborators":["E003"],"deadline":"1. do 5. dnia roboczego","process_id":"PR04"},
+  {"task_id":"RT02","name":"Uzgodnienia sald z kontrahentami","owner_id":"E003","collaborators":["E004"],"deadline":"do 10. dnia roboczego","process_id":"PR05"},
+  {"task_id":"RT03","name":"Raport VAT (JPK_V7)","owner_id":"E003","collaborators":["E002"],"deadline":"do 25. dnia miesiąca","process_id":"PR06"},
+  {"task_id":"RT04","name":"Rozliczanie delegacji","owner_id":"E004","collaborators":[],"deadline":"do 7. dnia miesiąca","process_id":"PR07"},
+  {"task_id":"RT05","name":"Przegląd dostępów","owner_id":"E018","collaborators":["E017"],"deadline":"pierwszy poniedziałek kwartału","process_id":"PR12"}
+]

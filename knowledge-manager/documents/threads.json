@@ -1,0 +1,412 @@
+[
+  {
+    "thread_id": "W01",
+    "channel": "#ksiegowosc",
+    "started_at": "2025-04-03T09:12:00",
+    "topic": "Płatność dla Trans-Logis",
+    "messages": [
+      {
+        "author_id": "E004",
+        "timestamp": "2025-04-03T09:12:00",
+        "text": "ania, mam do zapłaty fakturę od trans-logis, wszystko się zgadza, puszczam dzisiaj przelew?"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-04-03T09:15:00",
+        "text": "poczekaj z tym przelewem"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-04-03T09:16:00",
+        "text": "trans-logis chce mieć potwierdzenie faktury mailem zanim zapłacimy. jak nie dostaną, wstrzymują kolejne zlecenia i potem dyspozytorzy dzwonią do mnie z pretensjami"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2025-04-03T09:18:00",
+        "text": "serio? w umowie tego nie ma"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-04-03T09:19:00",
+        "text": "w umowie nie, w praktyce tak. taki ich zwyczaj od lat"
+      },
+      {
+        "author_id": "E002",
+        "timestamp": "2025-04-03T09:25:00",
+        "text": "czyli klasyka: nieoficjalny proces jest ważniejszy od oficjalnego xD"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2025-04-03T09:27:00",
+        "text": "no nic, wysyłam potwierdzenie i dopiero potem przelew. dzięki"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-04-03T09:28:00",
+        "text": "spoko. wyślij na adres księgowy, nie ten od dyspozycji, bo tam się gubi"
+      }
+    ]
+  },
+  {
+    "thread_id": "W02",
+    "channel": "#ksiegowosc",
+    "started_at": "2025-09-18T13:40:00",
+    "topic": "Korekta VAT dla Baltic Foods",
+    "messages": [
+      {
+        "author_id": "E004",
+        "timestamp": "2025-09-18T13:40:00",
+        "text": "mam korektę faktury dla baltic foods, błąd w stawce. wystawiam i wysyłam?"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-09-18T13:42:00",
+        "text": "nie wysyłaj od razu. korekty dla baltic zawsze idą przez kasię (główną), bo mają indywidualny termin płatności i zmiana wpływa na rozliczenie"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2025-09-18T13:43:00",
+        "text": "aha. a z innymi klientami normalnie?"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2025-09-18T13:44:00",
+        "text": "z innymi normalnie, jak w procedurze. baltic to wyjątek"
+      },
+      {
+        "author_id": "E002",
+        "timestamp": "2025-09-18T13:50:00",
+        "text": "jestem, widzę temat. wrzuć mi korektę do zatwierdzenia, zerknę po lunchu"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2025-09-18T13:51:00",
+        "text": "dzięki. dobrze wiedzieć zanim klient zadzwoni z pytaniem co się dzieje"
+      }
+    ]
+  },
+  {
+    "thread_id": "W03",
+    "channel": "#ksiegowosc",
+    "started_at": "2026-01-28T10:05:00",
+    "topic": "Potwierdzenia sald dla Mazovia Retail",
+    "messages": [
+      {
+        "author_id": "E004",
+        "timestamp": "2026-01-28T10:05:00",
+        "text": "wysyłam dziś potwierdzenia sald, mazovia też?"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2026-01-28T10:07:00",
+        "text": "mazovii nie wysyłaj teraz"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2026-01-28T10:08:00",
+        "text": "oni mają zamknięcie w ostatnim tygodniu miesiąca i nikt tam wtedy nie odpowiada. wysyłamy po trzecim dniu roboczym nowego miesiąca"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2026-01-28T10:09:00",
+        "text": "czyli jak zwykle w kalendarzu naszych kontrahentów jest drugi kalendarz"
+      },
+      {
+        "author_id": "E003",
+        "timestamp": "2026-01-28T10:10:00",
+        "text": "dokładnie. wpisz to sobie gdzieś, bo inaczej za rok znowu to wyjdzie"
+      },
+      {
+        "author_id": "E004",
+        "timestamp": "2026-01-28T10:12:00",
+        "text": "wpisane w uwagi przy kontrahencie. reszta idzie dziś"
+      }
+    ]
+  },
+  {
+    "thread_id": "W04",
+    "channel": "#sprzedaz",
+    "started_at": "2025-06-12T11:20:00",
+    "topic": "Stara wycena",
+    "messages": [
+      {
+        "author_id": "E011",
+        "timestamp": "2025-06-12T11:20:00",
+        "text": "klient wrócił do oferty z zeszłego tygodnia i pyta czy cena aktualna"
+      },
+      {
+        "author_id": "E010",
+        "timestamp": "2025-06-12T11:22:00",
+        "text": "ile minęło dni?"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2025-06-12T11:22:00",
+        "text": "dziewięć"
+      },
+      {
+        "author_id": "E010",
+        "timestamp": "2025-06-12T11:23:00",
+        "text": "to wycena nieważna, ważna jest 7 dni. trzeba przeliczyć"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2025-06-12T11:24:00",
+        "text": "ale stawka nie powinna się zmienić..."
+      },
+      {
+        "author_id": "E010",
+        "timestamp": "2025-06-12T11:25:00",
+        "text": "nie powinna, ale paliwo i opłaty drogowe lubią się zmieniać. przeliczę i zobaczymy"
+      },
+      {
+        "author_id": "E007",
+        "timestamp": "2025-06-12T11:40:00",
+        "text": "i pamiętajcie o marży. poniżej dwunastu proszę do mnie przed wysłaniem"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2025-06-12T11:41:00",
+        "text": "jasne, dzięki. plot twist będzie jak wyjdzie taniej xD"
+      }
+    ]
+  },
+  {
+    "thread_id": "W05",
+    "channel": "#sprzedaz",
+    "started_at": "2026-04-14T15:02:00",
+    "topic": "Rabat dla nowego klienta",
+    "messages": [
+      {
+        "author_id": "E009",
+        "timestamp": "2026-04-14T15:02:00",
+        "text": "klient prosi o 8% rabatu na start współpracy, co robimy?"
+      },
+      {
+        "author_id": "E007",
+        "timestamp": "2026-04-14T15:10:00",
+        "text": "do 5% możecie dać bez pytania, więcej już przeze mnie"
+      },
+      {
+        "author_id": "E009",
+        "timestamp": "2026-04-14T15:11:00",
+        "text": "a jeśli zamknie umowę na rok?"
+      },
+      {
+        "author_id": "E007",
+        "timestamp": "2026-04-14T15:12:00",
+        "text": "to rozmawiamy, ale na piśmie i z uzasadnieniem. księgowość musi o tym wiedzieć"
+      },
+      {
+        "author_id": "E008",
+        "timestamp": "2026-04-14T15:14:00",
+        "text": "ja bym dał 5 i pokazał, że drugie 3 to możliwe przy większym wolumenie"
+      },
+      {
+        "author_id": "E009",
+        "timestamp": "2026-04-14T15:15:00",
+        "text": "dobra, tak zrobię. dzięki"
+      }
+    ]
+  },
+  {
+    "thread_id": "W06",
+    "channel": "#operacje",
+    "started_at": "2025-10-21T14:35:00",
+    "topic": "Plan na jutro",
+    "messages": [
+      {
+        "author_id": "E013",
+        "timestamp": "2025-10-21T14:35:00",
+        "text": "25 minut do planu, a mam jeszcze cztery zlecenia bez przydziału"
+      },
+      {
+        "author_id": "E014",
+        "timestamp": "2025-10-21T14:36:00",
+        "text": "plan do 15:00 musi być zatwierdzony, wiesz"
+      },
+      {
+        "author_id": "E013",
+        "timestamp": "2025-10-21T14:37:00",
+        "text": "wiem, dlatego tak panikuję"
+      },
+      {
+        "author_id": "E014",
+        "timestamp": "2025-10-21T14:40:00",
+        "text": "daj mi dwa, ja wezmę te z południa"
+      },
+      {
+        "author_id": "E012",
+        "timestamp": "2025-10-21T14:44:00",
+        "text": "po zatwierdzeniu zmiany tras tylko przez dyspozytora i z wpisem w TMS, żeby nikt potem nie pytał dlaczego"
+      },
+      {
+        "author_id": "E013",
+        "timestamp": "2025-10-21T14:51:00",
+        "text": "gotowe, plan wrzucony. kawa się należy xD"
+      }
+    ]
+  },
+  {
+    "thread_id": "W07",
+    "channel": "#operacje",
+    "started_at": "2026-02-05T08:20:00",
+    "topic": "Awaria ciągnika",
+    "messages": [
+      {
+        "author_id": "E016",
+        "timestamp": "2026-02-05T08:20:00",
+        "text": "ciągnik na trasie do łodzi stanął, podobno układ paliwowy. kierowca czeka"
+      },
+      {
+        "author_id": "E013",
+        "timestamp": "2026-02-05T08:22:00",
+        "text": "mam jeden wolny na zastępstwo, ale dopiero od 11"
+      },
+      {
+        "author_id": "E012",
+        "timestamp": "2026-02-05T08:25:00",
+        "text": "bierz ten wolny. kierowca niech poczeka, klient dostanie info"
+      },
+      {
+        "author_id": "E016",
+        "timestamp": "2026-02-05T08:30:00",
+        "text": "autoserwis express odbierze zepsuty po południu"
+      },
+      {
+        "author_id": "E013",
+        "timestamp": "2026-02-05T08:31:00",
+        "text": "znowu paliwo, trzeci raz w tym kwartale"
+      },
+      {
+        "author_id": "E012",
+        "timestamp": "2026-02-05T08:35:00",
+        "text": "zbierzcie sobie to do jednej listy, porozmawiamy o przeglądach"
+      },
+      {
+        "author_id": "E016",
+        "timestamp": "2026-02-05T08:36:00",
+        "text": "zapisane, dopiszę do tematów na piątek"
+      }
+    ]
+  },
+  {
+    "thread_id": "W08",
+    "channel": "#it-support",
+    "started_at": "2025-11-04T09:00:00",
+    "topic": "VPN po aktualizacji",
+    "messages": [
+      {
+        "author_id": "E019",
+        "timestamp": "2025-11-04T09:00:00",
+        "text": "jeśli ktoś nie może wejść na VPN po wczorajszej aktualizacji, to znane, pracujemy"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2025-11-04T09:05:00",
+        "text": "a ja myślałam że to ja coś zepsułam"
+      },
+      {
+        "author_id": "E019",
+        "timestamp": "2025-11-04T09:06:00",
+        "text": "nie ty, tym razem aktualizacja"
+      },
+      {
+        "author_id": "E018",
+        "timestamp": "2025-11-04T09:12:00",
+        "text": "wystarczy przeinstalować klienta. instrukcja w zgłoszeniu, wrzucę też tutaj"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2025-11-04T09:20:00",
+        "text": "działa, dzięki. jak zwykle pomaga wyłączyć i włączyć xD"
+      },
+      {
+        "author_id": "E017",
+        "timestamp": "2025-11-04T09:25:00",
+        "text": "przy takich awariach proszę zakładać zgłoszenie w helpdesku, a nie tylko pisać tutaj. inaczej nie mamy historii"
+      }
+    ]
+  },
+  {
+    "thread_id": "W09",
+    "channel": "#it-support",
+    "started_at": "2026-05-27T10:10:00",
+    "topic": "Kiedy będzie dostęp",
+    "messages": [
+      {
+        "author_id": "E011",
+        "timestamp": "2026-05-27T10:10:00",
+        "text": "składam wniosek o dostęp do nowego modułu w CRM, ile to czeka?"
+      },
+      {
+        "author_id": "E018",
+        "timestamp": "2026-05-27T10:14:00",
+        "text": "jeśli wniosek składa kierownik, nadajemy w 2 dni robocze"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2026-05-27T10:15:00",
+        "text": "a jak złoży kierownik w piątek?"
+      },
+      {
+        "author_id": "E018",
+        "timestamp": "2026-05-27T10:16:00",
+        "text": "to dwa dni robocze liczymy od poniedziałku, piątek weekendowy się nie liczy"
+      },
+      {
+        "author_id": "E019",
+        "timestamp": "2026-05-27T10:20:00",
+        "text": "pro tip: wniosek razem ze wskazaniem systemu i zakresu, inaczej odbija się do kierownika"
+      },
+      {
+        "author_id": "E011",
+        "timestamp": "2026-05-27T10:22:00",
+        "text": "okej, proszę Joannę o złożenie od razu z zakresem"
+      }
+    ]
+  },
+  {
+    "thread_id": "W10",
+    "channel": "#obsluga-klienta",
+    "started_at": "2026-08-11T12:30:00",
+    "topic": "Trudna reklamacja",
+    "messages": [
+      {
+        "author_id": "E022",
+        "timestamp": "2026-08-11T12:30:00",
+        "text": "klient dzwoni trzeci raz w sprawie reklamacji, pyta czemu jeszcze nie ma odpowiedzi"
+      },
+      {
+        "author_id": "E021",
+        "timestamp": "2026-08-11T12:33:00",
+        "text": "potwierdzenie dostał?"
+      },
+      {
+        "author_id": "E022",
+        "timestamp": "2026-08-11T12:34:00",
+        "text": "dostał, w drugim dniu"
+      },
+      {
+        "author_id": "E021",
+        "timestamp": "2026-08-11T12:35:00",
+        "text": "to na odpowiedź mamy 14 dni, mija w czwartek. ja pracuję nad nią"
+      },
+      {
+        "author_id": "E020",
+        "timestamp": "2026-08-11T12:40:00",
+        "text": "wartość powyżej 5000, więc zanim wyślesz, do mnie. nie chcę poprawek po fakcie"
+      },
+      {
+        "author_id": "E021",
+        "timestamp": "2026-08-11T12:41:00",
+        "text": "jasne. szkic mam do końca dnia"
+      },
+      {
+        "author_id": "E022",
+        "timestamp": "2026-08-11T12:42:00",
+        "text": "to mu powiem, że w czwartek będzie odpowiedź. uspokoi się xD"
+      }
+    ]
+  }
+]

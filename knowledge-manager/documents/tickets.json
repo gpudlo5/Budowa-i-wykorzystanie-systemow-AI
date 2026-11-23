@@ -1,0 +1,652 @@
+[
+  {
+    "ticket_id": "T001",
+    "title": "Różnica w saldzie Trans-Logis za luty",
+    "description": "Po uzgodnieniach sald za luty saldo Trans-Logis w naszym ERP różni się o 2 340 zł od potwierdzenia dostawcy. Podejrzewam faktury zaksięgowane w różnych miesiącach. Potrzebne zestawienie dokumentów z lutego i marca.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR05",
+    "reporter_id": "E004",
+    "assignee_id": "E003",
+    "created_at": "2025-03-11T09:42:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-03-18T14:10:00",
+    "resolution": "Różnica wynikała z dwóch faktur dostawcy z końca lutego, które zaksięgowaliśmy w marcu. Ustalono datę ujęcia dokumentów, a dostawca przesłał poprawione potwierdzenie salda.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D005"
+    ],
+    "counterparty": "Trans-Logis Sp. z o.o."
+  },
+  {
+    "ticket_id": "T002",
+    "title": "Trans-Logis: brakujące noty obciążeniowe",
+    "description": "W uzgodnieniach za lipiec brakuje dwóch not obciążeniowych za postój, które dostawca ujął w zestawieniu. Bez nich saldo się nie zgadza. Proszę o wyjaśnienie z dyspozycją i dostawcą.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR05",
+    "reporter_id": "E002",
+    "assignee_id": "E003",
+    "created_at": "2025-08-14T10:05:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-08-22T13:30:00",
+    "resolution": "Noty dotyczyły postojów potwierdzonych przez dyspozytora. Dostawca przesłał brakujące dokumenty, a my zaksięgowaliśmy je w bieżącym okresie i zapisaliśmy uwagę przy kontrahencie w ERP.",
+    "related_system_ids": [
+      "S01",
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D005"
+    ],
+    "counterparty": "Trans-Logis Sp. z o.o."
+  },
+  {
+    "ticket_id": "T003",
+    "title": "Trans-Logis: rozbieżność salda po korektach",
+    "description": "Po korektach faktur z grudnia saldo Trans-Logis w ERP różni się od zestawienia dostawcy. Uzgodnienia z tym dostawcą robimy ręcznie, więc trzeba porównać pozycje jedna po drugiej.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR05",
+    "reporter_id": "E004",
+    "assignee_id": "E003",
+    "created_at": "2026-02-12T08:55:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-02-20T15:20:00",
+    "resolution": "Rozbieżność powstała, bo dostawca nie uwzględnił jednej korekty. Po wysłaniu dokumentu korygującego saldo zostało potwierdzone i uzgodnione w ERP.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D005",
+      "D009"
+    ],
+    "counterparty": "Trans-Logis Sp. z o.o."
+  },
+  {
+    "ticket_id": "T004",
+    "title": "Korekta VAT do faktury FV/2025/05/0211",
+    "description": "Faktura dla TechParts Poland została wystawiona ze złą stawką VAT na jednej pozycji usług dodatkowych. Potrzebna korekta przed wysyłką JPK za maj.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR06",
+    "reporter_id": "E004",
+    "assignee_id": "E003",
+    "created_at": "2025-06-09T11:20:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-06-12T09:45:00",
+    "resolution": "Wystawiono fakturę korygującą zatwierdzoną przez Główną Księgową. Korektę ujęto w ewidencji VAT za czerwiec, a klient potwierdził odbiór dokumentu.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D004",
+      "D006"
+    ],
+    "counterparty": "TechParts Poland Sp. z o.o."
+  },
+  {
+    "ticket_id": "T005",
+    "title": "Różnice w zaokrągleniach VAT w nowym module fakturowania",
+    "description": "W testach nowego modułu fakturowania kwoty VAT na fakturach z kilkoma stawkami różnią się o 1 do 2 groszy względem starego modułu. Do JPK to ma znaczenie, więc nie możemy tego zostawić. Sprawa zgłoszona dostawcy ERP.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR06",
+    "reporter_id": "E002",
+    "assignee_id": "E003",
+    "created_at": "2026-09-14T10:30:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": "P01",
+    "related_doc_ids": [
+      "D008",
+      "D006"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T006",
+    "title": "Brak numeru zlecenia na wydruku faktury w nowym module",
+    "description": "Na wydruku faktury z nowego modułu nie pojawia się numer zlecenia w polu uwag, a klienci odsyłają bez niego faktury do wyjaśnienia. Trzeba poprawić szablon.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR03",
+    "reporter_id": "E003",
+    "assignee_id": "E003",
+    "created_at": "2026-08-26T13:15:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-09-08T10:00:00",
+    "resolution": "Pole z numerem zlecenia zostało dodane do szablonu przy wsparciu działu IT. Sprawdzono wydruki na pięciu fakturach próbnych.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": "P01",
+    "related_doc_ids": [
+      "D004",
+      "D008"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T007",
+    "title": "Szablon faktury dla Greenline Pharma w nowym module",
+    "description": "Klient Greenline Pharma oczekuje faktur w swoim standardowym układzie. W nowym module szablon dla tego klienta wymaga weryfikacji i testów przed przełączeniem. Proszę o sprawdzenie układu na danych próbnych.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR03",
+    "reporter_id": "E008",
+    "assignee_id": "E003",
+    "created_at": "2026-10-19T09:10:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": "P01",
+    "related_doc_ids": [
+      "D008"
+    ],
+    "counterparty": "Greenline Pharma S.A."
+  },
+  {
+    "ticket_id": "T008",
+    "title": "Niezgodność faktury FuelCard Polska za wrzesień",
+    "description": "Faktura zbiorcza od FuelCard Polska za wrzesień jest o 1 180 zł wyższa niż suma rozliczeń z kart. Proszę o sprawdzenie pozycji i kontakt z dostawcą.",
+    "category": "Finanse i księgowość",
+    "process_id": "PR03",
+    "reporter_id": "E004",
+    "assignee_id": "E003",
+    "created_at": "2025-10-06T14:00:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-10-15T11:40:00",
+    "resolution": "Różnicę spowodowała opłata za zablokowaną kartę, która nie powinna zostać naliczona. Dostawca wystawił korektę, a my zaksięgowaliśmy ją w październiku.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D004"
+    ],
+    "counterparty": "FuelCard Polska"
+  },
+  {
+    "ticket_id": "T009",
+    "title": "Reklamacja: uszkodzone palety, Mazovia Retail",
+    "description": "Klient zgłosił uszkodzenie trzech palet po dostawie z 14 lutego. Przesłał zdjęcia i list przewozowy z adnotacją odbiorcy. Wartość roszczenia około 2 800 zł.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E022",
+    "assignee_id": "E021",
+    "created_at": "2025-02-17T10:15:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-02-28T12:00:00",
+    "resolution": "Przyczyną było nieprawidłowe zabezpieczenie ładunku przy załadunku. Roszczenie uznano w całości, a rekompensatę rozliczono notą. Przekazano uwagi do Operacji.",
+    "related_system_ids": [
+      "S04",
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001"
+    ],
+    "counterparty": "Mazovia Retail Sp. z o.o."
+  },
+  {
+    "ticket_id": "T010",
+    "title": "Reklamacja: opóźnienie dostawy, TechParts Poland",
+    "description": "Dostawa dla TechParts Poland dotarła z dwudniowym opóźnieniem, co zatrzymało linię u klienta. Klient oczekuje wyjaśnienia i rekompensaty.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E008",
+    "assignee_id": "E021",
+    "created_at": "2025-05-12T08:40:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-05-23T16:10:00",
+    "resolution": "Opóźnienie wynikło z awarii pojazdu w trasie. Klienta poinformowano o przyczynach, a rekompensatę ustalono jako rabat na kolejne zlecenie.",
+    "related_system_ids": [
+      "S04",
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001",
+      "D016"
+    ],
+    "counterparty": "TechParts Poland Sp. z o.o."
+  },
+  {
+    "ticket_id": "T011",
+    "title": "Reklamacja: odchylenie temperatury, Greenline Pharma",
+    "description": "Rejestrator temperatury w naczepie wskazał przekroczenie zakresu na odcinku około dwóch godzin. Klient wstrzymał przyjęcie partii. Wartość roszczenia przekracza 5000 zł, więc potrzebne zatwierdzenie Kierownika Obsługi Klienta.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E009",
+    "assignee_id": "E021",
+    "created_at": "2025-09-30T09:00:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-10-14T15:30:00",
+    "resolution": "Po analizie zapisów rejestratora ustalono krótką usterkę agregatu. Kierownik Obsługi Klienta zatwierdził odpowiedź z rekompensatą, a pojazd skierowano do przeglądu.",
+    "related_system_ids": [
+      "S04",
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001"
+    ],
+    "counterparty": "Greenline Pharma S.A."
+  },
+  {
+    "ticket_id": "T012",
+    "title": "Reklamacja: błędny adres w dokumencie przewozowym, Bud-Kom",
+    "description": "W dokumencie przewozowym podano stary adres rozładunku, przez co kierowca stracił czas na szukanie właściwego miejsca. Klient prosi o wyjaśnienie.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E022",
+    "assignee_id": "E021",
+    "created_at": "2026-03-04T11:05:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-03-10T14:00:00",
+    "resolution": "Błąd wynikał ze starej karty klienta w CRM. Adres poprawiono, a klientowi przesłano przeprosiny i potwierdzenie zmiany.",
+    "related_system_ids": [
+      "S04",
+      "S03"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001"
+    ],
+    "counterparty": "Bud-Kom Sp. z o.o."
+  },
+  {
+    "ticket_id": "T013",
+    "title": "Reklamacja: opóźnienie dostawy, Baltic Foods",
+    "description": "Klient reklamuje opóźnienie jednej dostawy o jeden dzień i zapowiada naliczenie kary umownej. Sprawa wymaga uzgodnienia ze Sprzedażą.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E008",
+    "assignee_id": "E021",
+    "created_at": "2026-07-21T10:30:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-08-05T13:45:00",
+    "resolution": "Opóźnienie częściowo wynikało z przyczyn leżących po stronie klienta (zmiana okna rozładunku). Uzgodniono częściowe uznanie roszczenia, a rozliczenie przeprowadzono notą.",
+    "related_system_ids": [
+      "S04",
+      "S03"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001"
+    ],
+    "counterparty": "Baltic Foods S.A."
+  },
+  {
+    "ticket_id": "T014",
+    "title": "Reklamacja: uszkodzony ładunek, TechParts Poland",
+    "description": "Klient zgłasza uszkodzenie opakowań dwóch skrzyń po rozładunku. Czekamy na zdjęcia i protokół szkody. Wartość roszczenia jeszcze nieznana.",
+    "category": "Reklamacje",
+    "process_id": "PR01",
+    "reporter_id": "E021",
+    "assignee_id": "E021",
+    "created_at": "2026-11-09T15:20:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S04"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D001"
+    ],
+    "counterparty": "TechParts Poland Sp. z o.o."
+  },
+  {
+    "ticket_id": "T015",
+    "title": "Awaria logowania do TMS, dyspozytorzy bez dostępu",
+    "description": "Od rana dyspozytorzy nie mogą zalogować się do TMS Northway Route. Planowanie dnia stoi. Priorytet P1.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR11",
+    "reporter_id": "E014",
+    "assignee_id": "E018",
+    "created_at": "2025-01-20T07:35:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-01-20T08:40:00",
+    "resolution": "Reakcja po 15 minutach. Przyczyną był wygasły certyfikat serwera uwierzytelniania. Certyfikat odnowiono i potwierdzono logowanie u wszystkich dyspozytorów.",
+    "related_system_ids": [
+      "S02",
+      "S07"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D017"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T016",
+    "title": "ERP wolno generuje plik JPK",
+    "description": "Generowanie wersji roboczej JPK trwa kilkanaście minut zamiast kilku. Priorytet P2.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR11",
+    "reporter_id": "E004",
+    "assignee_id": "E018",
+    "created_at": "2025-04-08T10:00:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-04-08T15:20:00",
+    "resolution": "Reakcja w ciągu 2 godzin. Przyczyną było obciążenie serwera bazy danych przez zadanie kopii zapasowej. Zmieniono godzinę kopii na noc.",
+    "related_system_ids": [
+      "S01"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D006"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T017",
+    "title": "Dostęp do TMS w trybie podglądu dla konsultanta",
+    "description": "Prośba o dostęp do TMS Northway Route w trybie podglądu dla Karoliny Sikory, do sprawdzania statusów zleceń przy kontakcie z klientem.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR12",
+    "reporter_id": "E020",
+    "assignee_id": "E019",
+    "created_at": "2025-06-24T09:30:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-06-26T10:15:00",
+    "resolution": "Dostęp nadano w ciągu 2 dni roboczych od wniosku kierownika. Zakres ograniczono do podglądu, a wpis dodano do rejestru dostępów.",
+    "related_system_ids": [
+      "S02",
+      "S07"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D018"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T018",
+    "title": "Laptop nie łączy się z VPN",
+    "description": "Laptop przedstawiciela handlowego nie łączy się z VPN po aktualizacji systemu. Praca u klienta jest niemożliwa. Priorytet P3.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR11",
+    "reporter_id": "E011",
+    "assignee_id": "E019",
+    "created_at": "2025-09-15T14:25:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-09-16T09:30:00",
+    "resolution": "Po reinstalacji klienta VPN połączenie działa. Wprowadzono aktualizację instrukcji dla użytkowników.",
+    "related_system_ids": [
+      "S07"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D017"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T019",
+    "title": "Kwartalny przegląd dostępów Q4 2025",
+    "description": "Wymagany jest kwartalny przegląd dostępów do systemów firmowych. Listy do potwierdzenia przez kierowników.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR12",
+    "reporter_id": "E017",
+    "assignee_id": "E018",
+    "created_at": "2025-12-02T08:30:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-12-09T12:00:00",
+    "resolution": "Przegląd przeprowadzono, listy potwierdzili wszyscy kierownicy. Usunięto cztery nieużywane dostępy, a wyniki zapisano w rejestrze.",
+    "related_system_ids": [
+      "S07",
+      "S01",
+      "S03"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D018"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T020",
+    "title": "Czytnik kodów w magazynie nie działa",
+    "description": "Czytnik kodów na stanowisku przyjęć nie odczytuje etykiet. Przyjęcia ręczne spowalniają pracę. Priorytet P2.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR11",
+    "reporter_id": "E015",
+    "assignee_id": "E019",
+    "created_at": "2026-03-17T08:10:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-03-17T13:00:00",
+    "resolution": "Reakcja w ciągu godziny. Uszkodzony kabel wymieniono, a czytnik skonfigurowano ponownie.",
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D017"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T021",
+    "title": "CRM Northway Clients działa wolno",
+    "description": "Od kilku dni karta klienta w CRM ładuje się nawet 20 sekund. Utrudnia to pracę przy wycenach. Priorytet P3.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR11",
+    "reporter_id": "E007",
+    "assignee_id": "E018",
+    "created_at": "2026-09-29T11:00:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-10-06T15:00:00",
+    "resolution": "Przyczyną była rozbudowana baza historii zapytań. Zarchiwizowano stare rekordy, a czas ładowania wrócił do normy.",
+    "related_system_ids": [
+      "S03"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D017"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T022",
+    "title": "Dostępy dla nowej osoby w Księgowości (start 2026-12-01)",
+    "description": "Prośba o założenie konta w Active Directory oraz dostępów do ERP, modułu Finanse i Portalu bankowego dla Piotra Nowaka (E023), który zaczyna pracę 2026-12-01. Dostęp do Portalu bankowego wymaga zgody Głównej Księgowej.",
+    "category": "Awarie i wsparcie IT",
+    "process_id": "PR12",
+    "reporter_id": "E002",
+    "assignee_id": "E018",
+    "created_at": "2026-11-16T09:05:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S07",
+      "S01",
+      "S06"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D018"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T023",
+    "title": "Brak konta w TMS w dniu pierwszego zlecenia kierowcy",
+    "description": "Nowy kierowca miał rozpocząć pracę, ale jego konto w TMS Northway Route nie było założone. Pierwsze zlecenie zostało opóźnione.",
+    "category": "Operacje",
+    "process_id": "PR09",
+    "reporter_id": "E016",
+    "assignee_id": "E016",
+    "created_at": "2025-03-25T07:50:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-03-27T10:00:00",
+    "resolution": "Konto założono następnego dnia, a zlecenie zrealizowano ze zmianą terminu. Do procedury dodano kontrolę konta przed dniem startu.",
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D014"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T024",
+    "title": "Awaria pojazdu w trasie, zlecenie zagrożone",
+    "description": "Ciągnik siodłowy zatrzymał się na trasie z objawami usterki układu paliwowego. Ładunek oczekuje na pojazd zastępczy.",
+    "category": "Operacje",
+    "process_id": "PR10",
+    "reporter_id": "E013",
+    "assignee_id": "E016",
+    "created_at": "2025-07-08T11:30:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-07-09T09:00:00",
+    "resolution": "Zorganizowano pojazd zastępczy, a uszkodzony ciągnik odholowano do AutoSerwis Express. Klienta poinformowano o opóźnieniu.",
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D016"
+    ],
+    "counterparty": "AutoSerwis Express"
+  },
+  {
+    "ticket_id": "T025",
+    "title": "Konflikt planów dwóch zleceń w tym samym oknie",
+    "description": "Dwa zlecenia zostały zaplanowane na ten sam pojazd i godzinę. Plan na następny dzień trzeba było poprawić po zatwierdzeniu.",
+    "category": "Operacje",
+    "process_id": "PR10",
+    "reporter_id": "E014",
+    "assignee_id": "E012",
+    "created_at": "2025-11-18T14:45:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-11-19T08:30:00",
+    "resolution": "Przesunięto jedno zlecenie na inny pojazd. Ustalono, że przed zatwierdzeniem planu o 15:00 dyspozytor sprawdza dostępność pojazdów w TMS.",
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D016"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T026",
+    "title": "Rozbieżność stanów magazynowych po inwentaryzacji",
+    "description": "Po comiesięcznej inwentaryzacji strefy B stan fizyczny różni się od systemowego o 14 palet. Potrzebne wyjaśnienie przyczyn.",
+    "category": "Operacje",
+    "process_id": "PR10",
+    "reporter_id": "E015",
+    "assignee_id": "E012",
+    "created_at": "2026-05-20T10:20:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-06-03T12:30:00",
+    "resolution": "Rozbieżność wynikała z niezarejestrowanych wydań z kilku dni. Stany skorygowano, a zespół przypomniano o skanowaniu każdej pozycji.",
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D016"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T027",
+    "title": "Błąd planowania tras w module TMS w testach",
+    "description": "W testach wdrożeniowych nowego modułu planowania system proponuje trasy z błędnym czasem postoju na granicach. Wymaga poprawki konfiguracji.",
+    "category": "Operacje",
+    "process_id": "PR10",
+    "reporter_id": "E013",
+    "assignee_id": "E012",
+    "created_at": "2026-11-12T13:00:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S02"
+    ],
+    "related_project_id": "P02",
+    "related_doc_ids": [
+      "D016"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T028",
+    "title": "Onboarding nowego pracownika działu Sprzedaży",
+    "description": "Nowa osoba w dziale Sprzedaży zaczyna pracę w poniedziałek. Potrzebny komplet dokumentów, sprzęt i dostęp do CRM.",
+    "category": "HR",
+    "process_id": "PR08",
+    "reporter_id": "E006",
+    "assignee_id": "E006",
+    "created_at": "2025-02-03T09:00:00",
+    "status": "zamknięte",
+    "resolved_at": "2025-02-14T16:00:00",
+    "resolution": "Wdrożenie przebiegło zgodnie z planem. Dokumenty podpisano pierwszego dnia, a dostęp do CRM nadano w ciągu 2 dni roboczych.",
+    "related_system_ids": [
+      "S05",
+      "S07",
+      "S03"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D011"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T029",
+    "title": "Aktualizacja procedury onboardingu pracownika",
+    "description": "Procedura onboardingu odwołuje się do systemów i ról, które w firmie już się zmieniły. Prośba o przegląd i aktualizację dokumentu.",
+    "category": "HR",
+    "process_id": "PR08",
+    "reporter_id": "E005",
+    "assignee_id": "E006",
+    "created_at": "2025-12-10T10:00:00",
+    "status": "otwarte",
+    "resolved_at": null,
+    "resolution": null,
+    "related_system_ids": [
+      "S05"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D011"
+    ],
+    "counterparty": null
+  },
+  {
+    "ticket_id": "T030",
+    "title": "Przekazanie obowiązków po odejściu pracownika Sprzedaży",
+    "description": "Pracownik działu Sprzedaży składa wypowiedzenie. Kierownik prosi o uruchomienie procesu offboardingu i przekazania obowiązków następcy.",
+    "category": "HR",
+    "process_id": "PR13",
+    "reporter_id": "E007",
+    "assignee_id": "E005",
+    "created_at": "2026-06-30T09:20:00",
+    "status": "zamknięte",
+    "resolved_at": "2026-07-20T15:00:00",
+    "resolution": "Dostępy odebrano w dniu odejścia. Obowiązki przekazano w formie notatki przekazania i spotkania z następcą.",
+    "related_system_ids": [
+      "S05",
+      "S07"
+    ],
+    "related_project_id": null,
+    "related_doc_ids": [
+      "D018"
+    ],
+    "counterparty": null
+  }
+]

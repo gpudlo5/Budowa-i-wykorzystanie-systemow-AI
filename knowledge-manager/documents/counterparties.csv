@@ -1,0 +1,9 @@
+counterparty_id,name,type,account_owner_id,finance_contact_id,notes
+C01,Baltic Foods S.A.,klient,E008,E003,klient kluczowy; umowa ramowa D022
+C02,Mazovia Retail Sp. z o.o.,klient,E009,E003,duży klient detaliczny
+C03,TechParts Poland Sp. z o.o.,klient,E008,E004,
+C04,Greenline Pharma S.A.,klient,E009,E004,transport farmaceutyków
+C05,Bud-Kom Sp. z o.o.,klient,E011,E004,
+V01,Trans-Logis Sp. z o.o.,dostawca,E012,E003,podwykonawca transportowy
+V02,AutoSerwis Express,dostawca,E016,E004,serwis floty
+V03,FuelCard Polska,dostawca,E012,E003,rozliczenia paliwa
