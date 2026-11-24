@@ -1,153 +1,175 @@
-import csv
+"""
+search_engine.py - silnik wyszukiwania Knowledge Managera (Northway Ltd.).
+
+Silnik tylko CZYTA baze zbudowana przez ingest.py. Niczego nie indeksuje.
+
+Jak dziala wyszukiwanie:
+  1. pytanie dostaje przedrostek QUERY_PREFIX i zamienia sie na wektor (ten sam model co w ingest.py),
+  2. ChromaDB zwraca najblizsze fragmenty, ale tylko takie, do ktorych grupa dostepu
+     pracownika ma uprawnienie (flagi acl_all / acl_<grupa> w metadanych),
+  3. wynik to lista fragmentow z danymi do cytowania (doc_id, tytul, sekcja, data, odleglosc).
+
+Model ladowany jest dopiero przy pierwszym pytaniu, zeby serwer MCP startowal szybko.
+"""
+
+import os
+import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 
-import chromadb
-from sentence_transformers import SentenceTransformer
-
-
 BASE_DIR = Path(__file__).resolve().parents[2]
-DATA_FILE = BASE_DIR / "data" / "raw" / "documents.csv"
-EMPLOYEES_FILE = BASE_DIR / "data" / "raw" / "employees.csv"
-ACL_FILE = BASE_DIR / "data" / "raw" / "acl.csv"
-DB_DIR = BASE_DIR / "data" / "processed" / "chroma_db"
+sys.path.insert(0, str(BASE_DIR))
 
-MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+from servers.common.config import (  # noqa: E402
+    COLLECTION_NAME, DB_DIR, DEFAULT_TOP_K, MAX_TOP_K, MODEL_NAME,
+    QUERY_PREFIX, acl_key,
+)
+from servers.common.org import Org  # noqa: E402
+
+# Opcjonalny prog: wyniki z odlegloscia wieksza niz ta wartosc sa odrzucane
+# (odleglosc kosinusowa: 0 = identyczne, im wiecej, tym mniej podobne).
+# Domyslnie wylaczony - najpierw skalibruj go smoke_test.py.
+_max_distance = os.environ.get("KM_MAX_DISTANCE", "").strip()
+MAX_DISTANCE = float(_max_distance) if _max_distance else None
 
 
 class SearchEngine:
     def __init__(self):
-        print("Ladowanie modelu embeddingowego...")
-        self.model = SentenceTransformer(MODEL_NAME)
+        self.org = Org()
+        self._model = None
+        self._collection = None
 
-        print("Uruchamianie bazy ChromaDB...")
-        self.client = chromadb.PersistentClient(path=str(DB_DIR))
+    # ------------------------------------------------------------ zasoby (leniwie)
 
-        self.collection = self.client.get_or_create_collection(
-            name="company_documents"
-        )
+    @property
+    def model(self):
+        if self._model is None:
+            # Biblioteki potrafia pisac na stdout; w serwerze stdio to psuje protokol MCP.
+            with redirect_stdout(sys.stderr):
+                from sentence_transformers import SentenceTransformer
+                print(f"Ladowanie modelu {MODEL_NAME} ...", file=sys.stderr)
+                self._model = SentenceTransformer(MODEL_NAME)
+        return self._model
 
-    def load_csv(self, file_path):
-        with open(file_path, "r", encoding="utf-8-sig") as file:
-            return list(csv.DictReader(file))
+    @property
+    def collection(self):
+        if self._collection is None:
+            with redirect_stdout(sys.stderr):
+                import chromadb
+                client = chromadb.PersistentClient(path=str(DB_DIR))
+                try:
+                    self._collection = client.get_collection(COLLECTION_NAME)
+                except Exception as exc:
+                    raise RuntimeError(
+                        f"Brak kolekcji '{COLLECTION_NAME}' w {DB_DIR}. "
+                        "Uruchom najpierw: python servers/search/ingest.py"
+                    ) from exc
+        return self._collection
 
-    def load_documents(self):
-        return self.load_csv(DATA_FILE)
+    # ------------------------------------------------------------ pracownicy i uprawnienia
 
     def get_employee(self, employee_id):
-        employees = self.load_csv(EMPLOYEES_FILE)
-
-        employee = next(
-            (
-                employee
-                for employee in employees
-                if employee["employee_id"] == employee_id
-            ),
-            None,
-        )
-
+        employee = self.org.get_employee(employee_id)
         if employee is None:
-            raise ValueError(
-                f"Nie znaleziono pracownika: {employee_id}"
-            )
-
+            raise ValueError(f"Nie znaleziono pracownika: {employee_id}")
         return employee
 
+    def _acl_filter(self, employee):
+        """Filtr Chroma: fragment jest widoczny, gdy jest dla wszystkich albo dla grupy pracownika."""
+        return {"$or": [
+            {acl_key("all"): True},
+            {acl_key(employee["access_group"]): True},
+        ]}
+
     def check_access(self, user_id, doc_id):
-        """
-        Sprawdza, czy pracownik ma dostęp do wskazanego dokumentu
-        na podstawie roli i pliku ACL.
-        """
+        """True, gdy dokument istnieje i pracownik ma do niego dostep."""
         employee = self.get_employee(user_id)
-        employee_role = employee["role_id"]
-
-        acl_entries = self.load_csv(ACL_FILE)
-
-        for entry in acl_entries:
-            if entry["doc_id"] == doc_id:
-                allowed_roles = [
-                    role.strip()
-                    for role in entry["allowed_roles"].split(";")
-                ]
-
-                return employee_role in allowed_roles
-
-        return False
-
-    def index_documents(self):
-        documents = self.load_documents()
-
-        if not documents:
-            print("Brak dokumentow do indeksowania.")
-            return
-
-        ids = [doc["doc_id"] for doc in documents]
-        texts = [doc["content"] for doc in documents]
-
-        metadatas = [
-            {
-                "doc_id": doc["doc_id"],
-                "title": doc["title"],
-                "department": doc["department"],
-                "doc_type": doc["doc_type"],
-                "status": doc["status"],
-            }
-            for doc in documents
-        ]
-
-        embeddings = self.model.encode(texts).tolist()
-
-        self.collection.upsert(
-            ids=ids,
-            documents=texts,
-            embeddings=embeddings,
-            metadatas=metadatas,
+        found = self.collection.get(
+            where={"$and": [{"doc_id": doc_id}, self._acl_filter(employee)]},
+            limit=1,
+            include=[],
         )
+        return len(found["ids"]) > 0
 
-        print(f"Zindeksowano dokumentow: {len(documents)}")
+    # ------------------------------------------------------------ wyszukiwanie
 
-    def search(self, question, employee_id, n_results=3):
-        # Najpierw sprawdzamy, czy pracownik istnieje.
-        self.get_employee(employee_id)
+    def search(self, question, employee_id, n_results=DEFAULT_TOP_K):
+        """Zwraca liste slownikow (od najlepszego dopasowania)."""
+        employee = self.get_employee(employee_id)
+        n_results = max(1, min(int(n_results), MAX_TOP_K))
 
-        # Pobieramy dokumenty, do których pracownik ma dostęp.
-        documents = self.load_documents()
+        embedding = self.model.encode(
+            [QUERY_PREFIX + question], normalize_embeddings=True
+        ).tolist()
 
-        allowed_doc_ids = [
-            doc["doc_id"]
-            for doc in documents
-            if self.check_access(employee_id, doc["doc_id"])
-        ]
-
-        if not allowed_doc_ids:
-            return []
-
-        query_embedding = self.model.encode([question]).tolist()
-
-        results = self.collection.query(
-            query_embeddings=query_embedding,
+        raw = self.collection.query(
+            query_embeddings=embedding,
             n_results=n_results,
-            where={
-                "doc_id": {"$in": allowed_doc_ids}
-            },
+            where=self._acl_filter(employee),
+            include=["documents", "metadatas", "distances"],
         )
 
+        results = []
+        for chunk_id, text, meta, dist in zip(
+            raw["ids"][0], raw["documents"][0], raw["metadatas"][0], raw["distances"][0]
+        ):
+            if MAX_DISTANCE is not None and dist > MAX_DISTANCE:
+                continue
+            results.append({
+                "doc_id": meta["doc_id"],
+                "chunk_id": chunk_id,
+                "title": meta["title"],
+                "source_type": meta["source_type"],
+                "section": meta.get("section", ""),
+                "department": meta.get("department", ""),
+                "doc_type": meta.get("doc_type", ""),
+                "status": meta.get("status", ""),
+                "last_modified": meta.get("last_modified", ""),
+                "distance": round(dist, 4),
+                "content": text,
+            })
         return results
+
+    # ------------------------------------------------------------ pelny dokument
+
+    def get_document(self, doc_id, employee_id):
+        """
+        Sklada pelna tresc dokumentu (zgloszenia, watku) z fragmentow.
+        Zwraca None, gdy dokument nie istnieje LUB pracownik nie ma dostepu
+        (celowo nie rozrozniamy tych przypadkow, zeby nie ujawniac istnienia dokumentu).
+        """
+        employee = self.get_employee(employee_id)
+        raw = self.collection.get(
+            where={"$and": [{"doc_id": doc_id}, self._acl_filter(employee)]},
+            include=["documents", "metadatas"],
+        )
+        if not raw["ids"]:
+            return None
+
+        chunks = sorted(
+            zip(raw["metadatas"], raw["documents"]),
+            key=lambda pair: pair[0].get("chunk_index", 0),
+        )
+        meta = chunks[0][0]
+        return {
+            "doc_id": meta["doc_id"],
+            "title": meta["title"],
+            "source_type": meta["source_type"],
+            "department": meta.get("department", ""),
+            "doc_type": meta.get("doc_type", ""),
+            "status": meta.get("status", ""),
+            "owner_id": meta.get("owner_id", ""),
+            "last_modified": meta.get("last_modified", ""),
+            "chunks": len(chunks),
+            "content": "\n\n".join(text for _, text in chunks),
+        }
 
 
 if __name__ == "__main__":
+    # Szybki test z terminala: python servers/search/search_engine.py "pytanie" E003
+    question = sys.argv[1] if len(sys.argv) > 1 else "Jak rozliczac faktury od dostawcow?"
+    user = sys.argv[2] if len(sys.argv) > 2 else "E003"
     engine = SearchEngine()
-    engine.index_documents()
-
-    question = "Jak rozliczac faktury od dostawcow?"
-    results = engine.search(question, employee_id="E002")
-
-    print("\nWYNIKI WYSZUKIWANIA:\n")
-
-    if results and results.get("documents") and results["documents"][0]:
-        for document, metadata in zip(
-            results["documents"][0],
-            results["metadatas"][0],
-        ):
-            print(f"Tytul: {metadata['title']}")
-            print(f"Tresc: {document}")
-            print("-" * 50)
+    print(f"\nPytanie: {question}   (uzytkownik: {engine.org.label(user)})\n")
+    for r in engine.search(question, user):
+        print(f'{r["doc_id"]:5s} d={r["distance"]:.3f}  {r["title"]}  [{r["section"]}]')

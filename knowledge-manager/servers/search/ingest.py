@@ -1,10 +1,6 @@
 """
 ingest.py - budowa bazy wektorowej ChromaDB z danych Northway Ltd.
 
-Uruchomienie (z katalogu knowledge-manager):
-    python servers/search/ingest.py              # pelna ingestia (kasuje i buduje kolekcje od nowa)
-    python servers/search/ingest.py --dry-run    # tylko podzial na fragmenty i statystyki, bez modelu i bazy
-    python servers/search/ingest.py --show D004  # pokaz fragmenty jednego dokumentu (dry-run)
 
 Co robi, krok po kroku:
   1. wczytuje dokumenty .md, zgloszenia (tickets.json) i watki (threads.json),
@@ -13,54 +9,36 @@ Co robi, krok po kroku:
   4. zamienia fragmenty na wektory (embeddingi),
   5. zapisuje wszystko do ChromaDB.
 
-Uwaga: ten skrypt jest jedynym miejscem, ktore buduje baze. Serwer Search MCP
-powinien ja tylko czytac (patrz README / uwagi o search_engine.py).
+
 """
 
 import argparse
 import csv
 import json
-import os
 import re
 import sys
 from pathlib import Path
 
 # ---------------------------------------------------------------- konfiguracja
+# Model, przedrostek pytania, nazwa kolekcji i sciezki sa w servers/common/config.py
+# (wspolne dla ingest.py, search_engine.py i server.py).
 
-BASE_DIR = Path(__file__).resolve().parents[2]        # .../knowledge-manager
-DEFAULT_DATA_DIR = BASE_DIR / "data"
-DB_DIR = BASE_DIR / "data" / "processed" / "chroma_db"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # .../knowledge-manager/servers
 
-COLLECTION_NAME = "company_documents"                 # ta sama nazwa co w search_engine.py
+from common.config import (  # noqa: E402
+     COLLECTION_NAME, DB_DIR, DEFAULT_GROUPS, MAX_SEQ_LENGTH,
+    MODEL_NAME, QUERY_PREFIX, TICKET_THREAD_ACL, DATA_DIR as DEFAULT_DATA_DIR,
+    acl_key,
+)
+from common.org import Org  # noqa: E402
 
-# Model embeddingow. Mozna go podmienic zmienna srodowiskowa KM_EMBEDDING_MODEL
-# (np. na mniejszy wariant z rodziny PolDense); przed zmiana sprawdz jego karte.
-MODEL_NAME = os.environ.get("KM_EMBEDDING_MODEL", "OPI-PIB/PolDense-1B")
-
-# Wg karty modelu: pytania koduje sie z przedrostkiem "[query]: ", a fragmenty
-# dokumentow (passages) bez przedrostka. Ta sama stala musi byc uzyta
-# w search_engine.py przy kodowaniu pytania uzytkownika.
-QUERY_PREFIX = "[query]: "
-
-# Model obsluguje bardzo dlugie teksty (do ok. 8192 tokenow), ale do wyszukiwania
-# lepsze sa fragmenty wielkosci jednej sekcji. 150 slow to ok. 250-300 tokenow.
-MAX_SEQ_LENGTH = 512
+# Wielkosc fragmentu: ok. 150 slow to ok. 250-300 tokenow.
 DEFAULT_MAX_WORDS = 150
-
-# Grupy dostepu uzywane do flag acl_*; uzupelniane z access_groups.csv, jesli jest.
-DEFAULT_GROUPS = [
-    "zarzad", "finanse", "hr", "sprzedaz",
-    "operacje", "it", "obsluga_klienta",
-]
-
-# Zgloszenia i watki sa dostepne dla wszystkich (zmien, jesli chcesz inaczej).
-TICKET_THREAD_ACL = ["all"]
 
 REQUIRED_FRONT_MATTER = [
     "doc_id", "title", "doc_type", "department_id", "owner_id",
     "author_id", "last_modified", "allowed_groups",
 ]
-
 
 # ---------------------------------------------------------------- wczytywanie
 
@@ -200,33 +178,22 @@ def markdown_to_sections(body):
 
 def acl_flags(allowed_groups, groups):
     """Chroma nie przyjmuje list w metadanych, wiec kazda grupa to osobna flaga True/False."""
-    flags = {"acl_all": "all" in allowed_groups}
+    flags = {acl_key("all"): "all" in allowed_groups}
     for g in groups:
-        flags[f"acl_{g}"] = g in allowed_groups
+        flags[acl_key(g)] = g in allowed_groups
     return flags
 
 
 def load_groups(data_dir):
-    path = find_file(data_dir, "access_groups.csv")
-    if path:
-        groups = [r["access_group"] for r in load_csv(path)]
-        return groups or DEFAULT_GROUPS
-    return DEFAULT_GROUPS
+    return Org(data_dir).groups or DEFAULT_GROUPS
 
 
 def load_department_names(data_dir):
-    path = find_file(data_dir, "departments.csv")
-    return {r["department_id"]: r["name"] for r in load_csv(path)} if path else {}
+    return Org(data_dir).department_names()
 
 
 def load_employee_names(data_dir):
-    path = find_file(data_dir, "employees.csv")
-    if not path:
-        return {}
-    rows = load_csv(path)
-    if not rows or "first_name" not in rows[0]:
-        return {}
-    return {r["employee_id"]: f'{r["first_name"]} {r["last_name"]}' for r in rows}
+    return {e_id: e["full_name"]for e_id, e in Org(data_dir).employees.items()}
 
 
 # ---------------------------------------------------------------- budowa fragmentow
@@ -417,7 +384,7 @@ def print_stats(records, problems):
         words = [len(r["text"].split()) for r in items]
         print(f"  {kind:9s} zrodel: {docs:3d}  fragmentow: {len(items):4d}  "
               f"slow/fragment: sr. {sum(words)/len(words):.0f}, max {max(words)}")
-    restricted = [r for r in records if not r["meta"]["acl_all"]]
+    restricted = [r for r in records if not r["meta"][acl_key("all")]]
     print(f"Fragmenty z ograniczonym dostepem (bez acl_all): {len(restricted)}")
     if problems:
         print("\nPROBLEMY:")
