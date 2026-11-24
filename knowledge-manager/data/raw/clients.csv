@@ -1,6 +1,0 @@
-client_id,company_name,contact_person,email,phone,client_type,status
-C001,TransPol Logistics,Adam Mazur,adam.mazur@transpol.example,+48500100101,strategic,active
-C002,EuroCargo Sp. z o.o.,Ewa Nowicka,ewa.nowicka@eurocargo.example,+48500100102,regular,active
-C003,Baltic Freight,Piotr Wójcik,piotr.wojcik@balticfreight.example,+48500100103,regular,active
-C004,FreshMarket Distribution,Anna Kaczmarek,anna.kaczmarek@freshmarket.example,+48500100104,strategic,active
-C005,NorthLine Transport,Marek Lewicki,marek.lewicki@northline.example,+48500100105,occasional,inactive

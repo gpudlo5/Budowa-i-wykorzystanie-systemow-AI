@@ -1,6 +1,0 @@
-doc_id,title,author_id,owner_id,department,doc_type,updated_at,status,content
-D001,Procedura obslugi reklamacji,E003,E003,Obsluga klienta,procedure,2026-08-10,active,"Reklamacje transportowe nalezy zarejestrowac w systemie w ciagu 24 godzin od otrzymania zgloszenia. Pracownik obslugi klienta weryfikuje dokumentacje i przekazuje sprawe do dzialu Operacji."
-D002,Procedura rozliczania faktur,E001,E001,Finanse,procedure,2026-09-15,active,"Faktury od dostawcow nalezy zweryfikowac z zamowieniem i potwierdzeniem wykonania uslugi. W przypadku rozbieznosci pracownik kontaktuje sie z dostawca przed zaksięgowaniem faktury."
-D003,Instrukcja zamkniecia miesiaca,E001,E001,Finanse,instruction,2026-10-01,active,"Zamkniecie miesiaca obejmuje uzgodnienie sald kontrahentow, weryfikacje faktur i przygotowanie raportu VAT. Proces rozpoczyna sie pierwszego dnia roboczego kolejnego miesiaca."
-D004,Procedura awarii systemu,E005,E005,IT,procedure,2026-07-20,active,"Awarie systemow nalezy zglaszac do dzialu IT przez formularz zgloszeniowy. W zgloszeniu nalezy podac opis problemu, godzine wystapienia i system, ktorego dotyczy."
-D005,Instrukcja wyceny transportu,E004,E004,Operacje,instruction,2026-09-01,active,"Wycena transportu uwzglednia dystans, typ ladunku, wymagany termin dostawy i dostepnosc floty."

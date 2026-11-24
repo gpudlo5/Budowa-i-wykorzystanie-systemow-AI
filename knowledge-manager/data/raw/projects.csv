@@ -1,4 +1,0 @@
-project_id,name,owner_id,department,status,description
-P001,Migracja modulu fakturowania,E001,Finanse,in_progress,Przeniesienie procesu fakturowania do nowego modulu
-P002,Automatyzacja reklamacji,E003,Obsluga klienta,completed,Usprawnienie obslugi reklamacji transportowych
-P003,Optymalizacja tras,E004,Operacje,in_progress,Poprawa planowania tras transportowych

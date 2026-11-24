@@ -1,7 +1,0 @@
-employee_id,first_name,last_name,department,role_id,job_title
-E001,Anna,Kowalska,Finanse,R_FINANCE,Starsza specjalistka ds. rozliczen
-E002,Piotr,Nowak,Finanse,R_FINANCE,Specjalista ds. rozliczen
-E003,Jan,Wisniewski,Obsluga klienta,R_SUPPORT,Specjalista ds. obslugi klienta
-E004,Marta,Zielinska,Operacje,R_OPERATIONS,Kierownik operacyjny
-E005,Tomasz,Kaczmarek,IT,R_IT,Administrator IT
-E006,Katarzyna,Lewandowska,HR,R_HR,Specjalistka HR
