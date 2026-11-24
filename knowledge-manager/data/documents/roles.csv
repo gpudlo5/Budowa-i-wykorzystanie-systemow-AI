@@ -1,0 +1,21 @@
+role_id,role_name,department_id,level,reports_to_role_id,description,access_group
+R01,Prezes Zarządu,D01,kierowniczy,,"Kieruje firmą, zatwierdza strategię i budżet",zarzad
+R02,Główna Księgowa,D02,kierowniczy,R01,"Odpowiada za księgowość, zamknięcia miesiąca i sprawozdawczość",finanse
+R03,Starszy Specjalista ds. Rozliczeń,D02,senior,R02,"Fakturowanie, uzgodnienia z kontrahentami, raporty VAT",finanse
+R04,Księgowy ds. Zobowiązań i Należności,D02,specjalista,R02,"Księgowanie faktur, rozliczanie delegacji i płatności",finanse
+R05,Specjalista ds. Kadr i Płac,D03,kierowniczy,R01,"Kadry, płace, umowy o pracę, offboarding",hr
+R06,Specjalista ds. Rekrutacji i Onboardingu,D03,specjalista,R05,Rekrutacja i wdrażanie nowych pracowników,hr
+R07,Kierownik Sprzedaży,D04,kierowniczy,R01,Zarządza zespołem sprzedaży i planem sprzedaży,sprzedaz
+R08,Key Account Manager,D04,senior,R07,Obsługa kluczowych klientów i negocjacje kontraktów,sprzedaz
+R09,Specjalista ds. Wycen Transportu,D04,specjalista,R07,Przygotowanie wycen i ofert transportowych,sprzedaz
+R10,Przedstawiciel Handlowy,D04,specjalista,R07,Pozyskiwanie nowych klientów,sprzedaz
+R11,Kierownik Operacji,D05,kierowniczy,R01,Zarządza operacjami transportowymi i magazynowymi,operacje
+R12,Dyspozytor Transportu,D05,specjalista,R11,Planowanie tras i przydział zleceń do kierowców,operacje
+R13,Koordynator Magazynu,D05,specjalista,R11,"Przyjęcia, wydania i stany magazynowe",operacje
+R14,Specjalista ds. Floty i Kierowców,D05,specjalista,R11,"Flota pojazdów, dokumenty kierowców, onboarding kierowców",operacje
+R15,Kierownik IT,D06,kierowniczy,R01,"Strategia i budżet IT, bezpieczeństwo",it
+R16,Administrator Systemów,D06,senior,R15,"Administracja systemami, konta i dostępy",it
+R17,Specjalista ds. Wsparcia IT,D06,specjalista,R15,"Helpdesk, zgłoszenia awarii, sprzęt",it
+R18,Kierownik Obsługi Klienta,D07,kierowniczy,R01,Zarządza zespołem obsługi klienta i jakością obsługi,obsluga_klienta
+R19,Specjalista ds. Reklamacji,D07,specjalista,R18,Obsługa i rozstrzyganie reklamacji klientów,obsluga_klienta
+R20,Konsultant Obsługi Klienta,D07,junior,R18,"Kontakt z klientami, statusy zleceń, zgłoszenia",obsluga_klienta

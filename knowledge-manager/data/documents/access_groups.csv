@@ -1,0 +1,8 @@
+access_group,name,description
+zarzad,Zarząd,"Dostęp do wszystkich dokumentów, w tym strategicznych i umów kluczowych klientów"
+finanse,Finanse,"Dokumenty finansowe, rozliczenia, umowy i faktury; wspólnie z zarządem dostęp do dokumentów o ograniczonym dostępie"
+hr,HR,"Dokumenty kadrowe, wynagrodzenia, rekrutacja i onboarding"
+sprzedaz,Sprzedaż,"Oferty, wyceny, dokumenty klientów i procedury sprzedażowe"
+operacje,Operacje,"Procedury transportowe, magazynowe, dyspozytorskie i flotowe"
+it,IT,"Dokumentacja techniczna, dostępy i runbooki"
+obsluga_klienta,Obsługa klienta,"Procedury reklamacji, FAQ i historia zgłoszeń klientów"

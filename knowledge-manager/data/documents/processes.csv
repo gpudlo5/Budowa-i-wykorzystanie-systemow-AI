@@ -1,0 +1,15 @@
+process_id,name,department_id,owner_role_id,frequency,description,system_ids
+PR01,Obsługa reklamacji klienta,D07,R19,w razie potrzeby,"Przyjęcie, analiza i rozstrzygnięcie reklamacji",S04;S03
+PR02,Wycena transportu,D04,R09,codziennie,Przygotowanie wyceny na zapytanie klienta,S03
+PR03,Fakturowanie i rozliczanie zleceń,D02,R03,codziennie,Wystawianie faktur i rozliczanie zleceń transportowych,S01
+PR04,Zamknięcie miesiąca,D02,R02,miesięcznie,Zamknięcie ksiąg i uzgodnienie sald,S01;S06
+PR05,Uzgodnienia z kontrahentami,D02,R03,miesięcznie,Potwierdzanie sald i wyjaśnianie różnic z kontrahentami,S01
+PR06,Raport VAT (JPK_VAT),D02,R03,miesięcznie,Przygotowanie i wysyłka ewidencji VAT,S01
+PR07,Rozliczanie delegacji,D02,R04,miesięcznie,Rozliczenie delegacji i zwrot kosztów,S01;S05
+PR08,Onboarding pracownika,D03,R06,w razie potrzeby,"Wdrożenie nowej osoby: dokumenty, szkolenia, dostępy",S05;S07
+PR09,Onboarding kierowców,D05,R14,w razie potrzeby,"Dokumenty, szkolenia i uprawnienia nowego kierowcy",S02;S05
+PR10,Planowanie i dyspozycja transportu,D05,R12,codziennie,Planowanie tras i przydział zleceń,S02
+PR11,Zgłaszanie awarii systemów IT,D06,R17,w razie potrzeby,"Przyjęcie, klasyfikacja i rozwiązanie awarii",S04
+PR12,Zarządzanie dostępami i kontami,D06,R16,w razie potrzeby,Nadawanie i odbieranie dostępów do systemów,S07
+PR13,Offboarding i przekazanie wiedzy,D03,R05,w razie potrzeby,Odejście pracownika i przekazanie jego obowiązków następcy,S05;S07
+PR14,Obsługa nowego klienta kluczowego,D04,R08,w razie potrzeby,"Pozyskanie i wdrożenie klienta kluczowego, umowa i warunki",S03

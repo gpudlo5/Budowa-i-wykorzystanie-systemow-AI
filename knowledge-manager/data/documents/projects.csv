@@ -1,0 +1,4 @@
+project_id,name,description,owner_id,status,start_date,planned_end_date,department_id,participant_ids
+P01,Migracja modułu fakturowania,Przeniesienie fakturowania do nowej wersji modułu Finanse ERP,E002,w toku,2026-06-01,2027-02-28,D02,E002;E003;E004;E018
+P02,Wdrożenie systemu TMS,Wdrożenie nowego systemu planowania transportu i dyspozycji,E012,w toku,2026-03-01,2027-03-31,D05,E012;E013;E014;E017;E018;E010
+P03,Automatyzacja uzgodnień z kontrahentami,Automatyczne zestawienia sald i przypomnienia dla kontrahentów,E003,zakończony,2025-02-03,2025-09-30,D02,E003;E004;E018

@@ -1,0 +1,8 @@
+department_id,name,head_employee_id,default_access_group
+D01,Zarząd,E001,zarzad
+D02,Księgowość,E002,finanse
+D03,HR,E005,hr
+D04,Sprzedaż,E007,sprzedaz
+D05,Operacje,E012,operacje
+D06,IT,E017,it
+D07,Obsługa klienta,E020,obsluga_klienta

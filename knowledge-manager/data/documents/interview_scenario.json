@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "employee_id": "E003",
+    "employee_name": "Anna Kowalska",
+    "role_id": "R03",
+    "successor_id": "E023",
+    "successor_name": "Piotr Nowak",
+    "last_day": "2026-12-15",
+    "note": "Fakty H01-H05 nie występują w dokumentach, zgłoszeniach ani wątkach. Wydobycie ich pytaniami jest podstawą pomiaru w ewaluacji (próg: co najmniej 4 z 5)."
+  },
+  "facts": [
+    {
+      "id": "H01",
+      "fact": "Po czerwcowej aktualizacji ERP przelicza faktury w EUR po kursie z dnia wystawienia zamiast z dnia poprzedzającego. Przed wysłaniem JPK trzeba ręcznie skorygować raport kursowy.",
+      "hint_question": "Czy po ostatnich aktualizacjach ERP jest coś, co trzeba sprawdzić albo poprawić ręcznie przed wysłaniem JPK, zwłaszcza przy fakturach w walucie obcej?",
+      "anna_answer": "Tak, po aktualizacji z czerwca ERP przelicza faktury w EUR po kursie z dnia wystawienia, a nie z dnia poprzedzającego, jak jest w procedurze. Przed JPK zawsze poprawiam ręcznie raport kursowy. Jak o tym zapomnisz, wychodzą rozjazdy, które potem trudno wyjaśnić.",
+      "verification_keywords": [
+        "kurs",
+        "dzień wystawienia",
+        "EUR",
+        "JPK",
+        "ręcznie"
+      ],
+      "handover_section": "Pułapki i nieoczywiste zasady"
+    },
+    {
+      "id": "H02",
+      "fact": "Noty korygujące powyżej 10 000 zł wymagają wcześniejszej zgody Prezesa, najlepiej telefonicznej przed 10:00. Dopiero potem wystawia się notę.",
+      "hint_question": "Czy przy notach korygujących o dużej wartości jest dodatkowy krok zatwierdzania, który nie jest opisany w procedurach?",
+      "anna_answer": "Jest. Przy notach korygujących powyżej 10 000 zł najpierw dzwonię do Prezesa po zgodę, najlepiej przed 10:00, bo potem ma spotkania. Dopiero po tym wystawiam notę. Bez tego Główna Księgowa i tak by ją cofnęła.",
+      "verification_keywords": [
+        "nota korygująca",
+        "10 000",
+        "Prezes",
+        "przed 10:00",
+        "zgoda"
+      ],
+      "handover_section": "Pułapki i nieoczywiste zasady"
+    },
+    {
+      "id": "H03",
+      "fact": "Mazovia Retail płaci zwykle 5 dni po terminie, ale zarząd ustnie zdecydował, że nie naliczamy odsetek.",
+      "hint_question": "Czy któryś z klientów regularnie płaci po terminie i jak go wtedy traktujemy w rozliczeniach?",
+      "anna_answer": "Mazovia Retail płaci zwykle jakieś 5 dni po terminie. Zarząd ustnie zdecydował, że nie naliczamy im za to odsetek, więc nie ruszaj tego i nie wysyłaj wezwań. To nie jest nigdzie zapisane, dlatego ci mówię.",
+      "verification_keywords": [
+        "Mazovia Retail",
+        "5 dni",
+        "odsetki",
+        "zarząd",
+        "nie naliczamy"
+      ],
+      "handover_section": "Kontakty i relacje z kontrahentami"
+    },
+    {
+      "id": "H04",
+      "fact": "Zapasowy token do Portalu bankowego jest w sejfie Anny. Podstawowy ma Główna Księgowa.",
+      "hint_question": "Kto ma dostęp do Portalu bankowego i co się dzieje, gdy osoba z podstawowym dostępem jest nieobecna?",
+      "anna_answer": "Podstawowy token do Portalu bankowego ma Główna Księgowa. Zapasowy trzymam w swoim sejfie, więc przed moim odejściem trzeba go przekazać. Inaczej przy nieobecności Kasi nikt nie wykona przelewu.",
+      "verification_keywords": [
+        "token",
+        "sejf",
+        "Portal bankowy",
+        "Główna Księgowa",
+        "zapasowy"
+      ],
+      "handover_section": "Systemy i wymagane dostępy"
+    },
+    {
+      "id": "H05",
+      "fact": "W nowym module fakturowania szablon faktury dla Greenline Pharma nie ma pola z numerem pozwolenia GDP. Obejście to ręczna edycja PDF przed wysyłką.",
+      "hint_question": "Czy któryś klient ma wymagania dotyczące faktur, których nowy moduł fakturowania jeszcze nie obsługuje?",
+      "anna_answer": "Tak, Greenline Pharma. Ich faktura musi zawierać numer pozwolenia GDP, a w nowym module szablon nie ma na to pola. Na razie edytuję PDF ręcznie przed wysyłką, dopóki IT tego nie dorobi.",
+      "verification_keywords": [
+        "Greenline Pharma",
+        "GDP",
+        "pozwolenie",
+        "PDF",
+        "szablon"
+      ],
+      "handover_section": "Projekty w toku"
+    }
+  ],
+  "general": [
+    {
+      "question": "Co jest najtrudniejsze w tym stanowisku?",
+      "answer": "Terminy. Zamknięcie miesiąca, uzgodnienia sald i raport VAT nakładają się w jednym okresie, więc trzeba pilnować kalendarza zadań cyklicznych."
+    },
+    {
+      "question": "Kogo warto poznać w pierwszym tygodniu?",
+      "answer": "Główną Księgową Katarzynę Zielińską, Marka Lewandowskiego z mojego zespołu, Dominikę Król z IT, która pracuje przy migracji fakturowania, oraz Michała Szymańskiego, który obsługuje klientów kluczowych."
+    },
+    {
+      "question": "Co przeczytać na początek?",
+      "answer": "Procedurę fakturowania, instrukcję uzgodnień sald, instrukcję raportu VAT i notatki projektowe z migracji modułu fakturowania."
+    },
+    {
+      "question": "Jakie projekty są w toku?",
+      "answer": "Migracja modułu fakturowania, czyli projekt P01. W nim są jeszcze otwarte sprawy: zaokrąglenia VAT i szablon faktury dla jednego z klientów."
+    },
+    {
+      "question": "Z którymi kontrahentami jest najwięcej pracy?",
+      "answer": "Z Trans-Logis, bo uzgodnienia robię z nimi ręcznie, oraz z klientami kluczowymi, których warunki trzeba sprawdzać przed wystawieniem faktury."
+    }
+  ]
+}

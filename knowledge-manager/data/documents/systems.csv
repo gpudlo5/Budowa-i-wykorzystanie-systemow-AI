@@ -1,0 +1,8 @@
+system_id,name,type,owner_department_id
+S01,ERP Northway (moduł Finanse),ERP,D02
+S02,TMS Northway Route,zarządzanie transportem,D05
+S03,CRM Northway Clients,CRM,D04
+S04,Helpdesk Northway Support,zgłoszenia i reklamacje,D07
+S05,HRIS Northway People,HR i płace,D03
+S06,Portal bankowy,bankowość,D02
+S07,Active Directory,konta i dostępy,D06
