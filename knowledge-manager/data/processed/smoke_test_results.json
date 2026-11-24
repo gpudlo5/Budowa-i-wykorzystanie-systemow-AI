@@ -1,0 +1,315 @@
+{
+  "model": "OPI-PIB/PolDense-400M",
+  "top_k": 5,
+  "retrieval": {
+    "hits": 10,
+    "total": 10,
+    "rows": [
+      {
+        "question": "Ile dni mamy na odpowiedź merytoryczną na reklamację klienta?",
+        "user": "E020",
+        "group": "obsluga_klienta",
+        "expected": [
+          "D001",
+          "D002"
+        ],
+        "returned": [
+          "D001",
+          "D002",
+          "W10"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5569,
+        "best_expected_distance": 0.5569
+      },
+      {
+        "question": "Jaka jest minimalna marża przy wycenie transportu?",
+        "user": "E007",
+        "group": "sprzedaz",
+        "expected": [
+          "D003"
+        ],
+        "returned": [
+          "D003",
+          "W04",
+          "D012"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5526,
+        "best_expected_distance": 0.5526
+      },
+      {
+        "question": "Do kiedy trzeba wysłać raport VAT JPK_V7?",
+        "user": "E002",
+        "group": "finanse",
+        "expected": [
+          "D006"
+        ],
+        "returned": [
+          "D006"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5218,
+        "best_expected_distance": 0.5218
+      },
+      {
+        "question": "W jakim terminie zamykamy miesiąc w księgowości?",
+        "user": "E002",
+        "group": "finanse",
+        "expected": [
+          "D007"
+        ],
+        "returned": [
+          "D007"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5828,
+        "best_expected_distance": 0.5828
+      },
+      {
+        "question": "Jakie dokumenty musi dostarczyć nowy kierowca?",
+        "user": "E012",
+        "group": "operacje",
+        "expected": [
+          "D014",
+          "D015"
+        ],
+        "returned": [
+          "D015",
+          "D014"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5723,
+        "best_expected_distance": 0.5723
+      },
+      {
+        "question": "W ciągu ilu dni trzeba rozliczyć delegację po powrocie?",
+        "user": "E020",
+        "group": "obsluga_klienta",
+        "expected": [
+          "D010",
+          "D013"
+        ],
+        "returned": [
+          "D010",
+          "D013"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5709,
+        "best_expected_distance": 0.5709
+      },
+      {
+        "question": "Jaki jest standardowy termin płatności faktur dla klientów?",
+        "user": "E007",
+        "group": "sprzedaz",
+        "expected": [
+          "D004",
+          "D012"
+        ],
+        "returned": [
+          "D004",
+          "D012"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.629,
+        "best_expected_distance": 0.629
+      },
+      {
+        "question": "O ile skrócił się czas uzgodnień sald z kontrahentami po automatyzacji?",
+        "user": "E002",
+        "group": "finanse",
+        "expected": [
+          "D009"
+        ],
+        "returned": [
+          "D009",
+          "D005"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5085,
+        "best_expected_distance": 0.5085
+      },
+      {
+        "question": "Kiedy planowo kończy się projekt migracji modułu fakturowania?",
+        "user": "E002",
+        "group": "finanse",
+        "expected": [
+          "D008"
+        ],
+        "returned": [
+          "D008"
+        ],
+        "hit": true,
+        "rank": 1,
+        "best_distance": 0.5331,
+        "best_expected_distance": 0.5331
+      },
+      {
+        "question": "Jak postępować z płatnością dla Trans-Logis, gdy faktura się zgadza?",
+        "user": "E002",
+        "group": "finanse",
+        "expected": [
+          "W01"
+        ],
+        "returned": [
+          "T003",
+          "D009",
+          "W01",
+          "T001",
+          "T002"
+        ],
+        "hit": true,
+        "rank": 3,
+        "best_distance": 0.5298,
+        "best_expected_distance": 0.5364
+      }
+    ]
+  },
+  "acl": {
+    "passed": 6,
+    "total": 6,
+    "rows": [
+      {
+        "test": "widełki płacowe (konsultant obsługi klienta)",
+        "user": "E020",
+        "group": "obsluga_klienta",
+        "forbidden": [
+          "D021"
+        ],
+        "leaked_in_search": [],
+        "leaked_by_check_access": [],
+        "leaked_by_get_document": [],
+        "ok": true
+      },
+      {
+        "test": "umowa z Baltic Foods (konsultant obsługi klienta)",
+        "user": "E020",
+        "group": "obsluga_klienta",
+        "forbidden": [
+          "D022"
+        ],
+        "leaked_in_search": [],
+        "leaked_by_check_access": [],
+        "leaked_by_get_document": [],
+        "ok": true
+      },
+      {
+        "test": "widełki płacowe (sprzedaż)",
+        "user": "E007",
+        "group": "sprzedaz",
+        "forbidden": [
+          "D021"
+        ],
+        "leaked_in_search": [],
+        "leaked_by_check_access": [],
+        "leaked_by_get_document": [],
+        "ok": true
+      },
+      {
+        "test": "instrukcja magazynu tylko dla operacji (finanse)",
+        "user": "E002",
+        "group": "finanse",
+        "forbidden": [
+          "D019"
+        ],
+        "leaked_in_search": [],
+        "leaked_by_check_access": [],
+        "leaked_by_get_document": [],
+        "ok": true
+      },
+      {
+        "test": "PROMPT INJECTION w pytaniu (obsługa klienta)",
+        "user": "E020",
+        "group": "obsluga_klienta",
+        "forbidden": [
+          "D021",
+          "D022"
+        ],
+        "leaked_in_search": [],
+        "leaked_by_check_access": [],
+        "leaked_by_get_document": [],
+        "ok": true
+      },
+      {
+        "test": "kontrola pozytywna: finanse widzą widełki",
+        "user": "E002",
+        "group": "finanse",
+        "expected_visible": "D021",
+        "in_search": true,
+        "check_access": true,
+        "get_document": true,
+        "ok": true
+      }
+    ]
+  },
+  "gap": {
+    "suggested_max_distance": null,
+    "rows": [
+      {
+        "question": "Jaka jest polityka dotycząca samochodów służbowych dla handlowców?",
+        "user": "E002",
+        "best_distance": 0.6164,
+        "top": [
+          [
+            "D012",
+            0.6164
+          ],
+          [
+            "D012",
+            0.6346
+          ],
+          [
+            "D012",
+            0.6363
+          ]
+        ]
+      },
+      {
+        "question": "Jakie szkolenia zewnętrzne może zamówić pracownik i kto je zatwierdza?",
+        "user": "E002",
+        "best_distance": 0.7039,
+        "top": [
+          [
+            "D013",
+            0.7039
+          ],
+          [
+            "D013",
+            0.7091
+          ],
+          [
+            "D010",
+            0.7122
+          ]
+        ]
+      },
+      {
+        "question": "Czy można pracować zdalnie z zagranicy i na jakich zasadach?",
+        "user": "E002",
+        "best_distance": 0.6604,
+        "top": [
+          [
+            "D010",
+            0.6604
+          ],
+          [
+            "D013",
+            0.7299
+          ],
+          [
+            "D010",
+            0.7321
+          ]
+        ]
+      }
+    ]
+  }
+}

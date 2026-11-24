@@ -34,7 +34,7 @@ COLLECTION_NAME = "company_documents"
 # Mozna podmienic zmienna srodowiskowa KM_EMBEDDING_MODEL, np. na mniejszy
 # wariant z rodziny PolDense. Po zmianie modelu TRZEBA przebudowac baze
 # (python servers/search/ingest.py), bo wektory z roznych modeli sa niezgodne.
-MODEL_NAME = os.environ.get("KM_EMBEDDING_MODEL", "OPI-PIB/PolDense-1B")
+MODEL_NAME = os.environ.get("KM_EMBEDDING_MODEL", "OPI-PIB/PolDense-400M")
 
 # Wg karty modelu: pytania z przedrostkiem, fragmenty dokumentow bez.
 # Przy zmianie modelu sprawdz jego karte - inne warianty moga wymagac innego przedrostka.

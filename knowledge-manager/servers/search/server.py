@@ -10,6 +10,7 @@ Komunikaty diagnostyczne ida na stderr.
 
 import json
 import sys
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,6 +30,8 @@ active_employee_id = None
 # Tworzenie silnika jest tanie: model i baza laduja sie dopiero przy pierwszym pytaniu.
 engine = SearchEngine()
 
+# Model i baze laduje sie w tle od razu po starcie, zeby pierwsze pytanie nie czekalo.
+threading.Thread(target=engine.warm_up, daemon=True).start()
 
 def write_audit_event(event_type, actor_id=None, details=None):
     """Zapisuje zdarzenie do dziennika audytu (jeden wiersz JSON na zdarzenie)."""

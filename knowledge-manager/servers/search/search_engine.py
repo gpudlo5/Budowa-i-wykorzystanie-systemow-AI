@@ -14,8 +14,12 @@ Model ladowany jest dopiero przy pierwszym pytaniu, zeby serwer MCP startowal sz
 
 import os
 import sys
-from contextlib import redirect_stdout
+import threading
+import time
 from pathlib import Path
+
+# Wylaczam telemetrie Chroma, zanim biblioteka zostanie zaimportowana.
+os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(BASE_DIR))
@@ -38,23 +42,27 @@ class SearchEngine:
         self.org = Org()
         self._model = None
         self._collection = None
+        self._lock = threading.Lock()
 
-    # ------------------------------------------------------------ zasoby (leniwie)
+    # ------------------------------------------------------------ zasoby (leniwie, bezpiecznie dla watkow)
+    # Uwaga: w serwerze stdio nic nie moze trafic na stdout. Wszystkie nasze komunikaty
+    # ida na stderr, a biblioteki (tqdm, logging) tez pisza na stderr.
 
     @property
     def model(self):
-        if self._model is None:
-            # Biblioteki potrafia pisac na stdout; w serwerze stdio to psuje protokol MCP.
-            with redirect_stdout(sys.stderr):
+        with self._lock:
+            if self._model is None:
+                start = time.time()
+                print(f"[search] ladowanie modelu {MODEL_NAME} ...", file=sys.stderr, flush=True)
                 from sentence_transformers import SentenceTransformer
-                print(f"Ladowanie modelu {MODEL_NAME} ...", file=sys.stderr)
                 self._model = SentenceTransformer(MODEL_NAME)
-        return self._model
+                print(f"[search] model gotowy po {time.time() - start:.1f} s", file=sys.stderr, flush=True)
+            return self._model
 
     @property
     def collection(self):
-        if self._collection is None:
-            with redirect_stdout(sys.stderr):
+        with self._lock:
+            if self._collection is None:
                 import chromadb
                 client = chromadb.PersistentClient(path=str(DB_DIR))
                 try:
@@ -64,7 +72,18 @@ class SearchEngine:
                         f"Brak kolekcji '{COLLECTION_NAME}' w {DB_DIR}. "
                         "Uruchom najpierw: python servers/search/ingest.py"
                     ) from exc
-        return self._collection
+                print(f"[search] baza gotowa: {self._collection.count()} fragmentow",
+                      file=sys.stderr, flush=True)
+            return self._collection
+
+    def warm_up(self):
+        """Laduje baze i model z wyprzedzeniem (wolane w tle przy starcie serwera)."""
+        try:
+            self.collection
+            self.model.encode([QUERY_PREFIX + "rozgrzewka"], normalize_embeddings=True)
+            print("[search] rozgrzewka zakonczona", file=sys.stderr, flush=True)
+        except Exception as exc:  # serwer ma dzialac nawet gdy rozgrzewka sie nie uda
+            print(f"[search] rozgrzewka nieudana: {exc}", file=sys.stderr, flush=True)
 
     # ------------------------------------------------------------ pracownicy i uprawnienia
 

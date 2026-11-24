@@ -1,0 +1,14 @@
+[project]
+name = "knowledge-manager"
+version = "0.1.0"
+description = "Knowledge Manager (Northway Ltd.) - serwery MCP: Search i Handover"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]<2",
+    "chromadb",
+    "sentence-transformers>=5.4.0",
+]
+
+# Projekt to zestaw skryptow, a nie instalowalny pakiet.
+[tool.uv]
+package = false
