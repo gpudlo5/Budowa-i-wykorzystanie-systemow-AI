@@ -1,0 +1,11 @@
+thread_id,ticket_id,client_id,subject,participants,last_message_at,status,summary,assigned_to
+TH001,T001,C001,Weryfikacja faktury FV/2026/101,Anna Kowalska; Adam Mazur,2026-11-20,open,Klient przesłał fakturę i oczekuje potwierdzenia zgodności z zamówieniem,E001
+TH002,T002,C002,Rozbieżność kwoty na fakturze,Ewa Nowicka; Anna Kowalska,2026-11-19,open,Wyjaśniana jest różnica między kwotą faktury a wartością zamówienia,E001
+TH003,T003,C003,Brak potwierdzenia wykonania usługi,Anna Kowalska; Piotr Wójcik,2026-11-18,pending,Klient ma dosłać brakujące potwierdzenie wykonania usługi,E001
+TH004,T004,C004,Przygotowanie raportu VAT,Anna Kowalska; Anna Kaczmarek,2026-11-20,open,Klient oczekuje informacji o rozliczeniu dokumentów za bieżący okres,E001
+TH005,T005,C001,Potwierdzenie salda kontrahenta,Anna Kowalska; Adam Mazur,2026-11-17,open,Wysłano prośbę o potwierdzenie salda i oczekujemy na odpowiedź,E001
+TH006,T007,C003,Opóźniona płatność za transport,Piotr Nowak; Piotr Wójcik,2026-11-20,open,Piotr Nowak sprawdza status płatności i termin uregulowania należności,E002
+TH007,T011,C002,Reklamacja opóźnionej dostawy,Jan Wiśniewski; Ewa Nowicka,2026-11-19,in_progress,Klient otrzymał informację o analizie reklamacji i oczekuje na decyzję,E003
+TH008,T017,C004,Analiza kosztów trasy,Marta Zielińska; Anna Kaczmarek,2026-11-18,open,Klient poprosił o wyjaśnienie kosztów realizacji transportu,E004
+TH009,T021,C003,Błąd dostępu do systemu,Tomasz Kaczmarek; Piotr Wójcik,2026-11-20,in_progress,Zespół IT analizuje problem z logowaniem użytkownika,E005
+TH010,T026,C004,Przygotowanie dokumentów pracowniczych,Katarzyna Lewandowska; Anna Kaczmarek,2026-11-16,open,Trwa kompletowanie dokumentacji wymaganej przez dział HR,E006
