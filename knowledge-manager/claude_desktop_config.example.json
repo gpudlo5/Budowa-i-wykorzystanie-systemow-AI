@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "northway-search": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\Users\\User\\systemy_ai\\Budowa-i-wykorzystanie-systemow-AI\\knowledge-manager",
+        "run",
+        "servers/search/server.py"
+      ],
+      "env": {
+        "KM_USER_ID": "E023",
+        "ANONYMIZED_TELEMETRY": "False",
+        "HF_HUB_OFFLINE": "1"
+      }
+    },
+    "northway-handover": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\Users\\User\\systemy_ai\\Budowa-i-wykorzystanie-systemow-AI\\knowledge-manager",
+        "run",
+        "servers/handover/server.py"
+      ],
+      "env": {
+        "KM_USER_ID": "E023"
+      }
+    }
+  }
+}

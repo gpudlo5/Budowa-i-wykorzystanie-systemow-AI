@@ -7,6 +7,7 @@ potwierdzenia stron, zatwierdzenie przez przelozonego, publikacja.
 Uzytkownik: ze zmiennej srodowiskowej KM_USER_ID (konfiguracja serwera).
 """
 
+import os
 import json
 import re
 import sys
@@ -29,7 +30,8 @@ from servers.common.config import (  # noqa: E402
 from servers.common.data import load_csv, load_json, split_ids  # noqa: E402
 from servers.common.org import Org  # noqa: E402
 
-INTERVIEW_FILE = BASE_DIR / "docs" / "handover_interview.md"
+# Scenariusz wywiadu; na prezentacje mozna wskazac krotszy (KM_INTERVIEW_FILE).
+INTERVIEW_FILE = Path(os.environ.get("KM_INTERVIEW_FILE", BASE_DIR / "docs" / "handover_interview.md"))
 PROMPT_FILE = BASE_DIR / "prompts" / "handover.md"
 
 mcp = FastMCP("Northway Handover")

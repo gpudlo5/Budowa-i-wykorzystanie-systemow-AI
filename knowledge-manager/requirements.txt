@@ -1,4 +1,4 @@
+# Zaleznosci dla pip. Zrodlo prawdy: pyproject.toml + uv.lock (zalecane: uv sync).
+mcp[cli]<2
 chromadb
-sentence-transformers
-pandas
-python-dotenv
+sentence-transformers>=5.4.0

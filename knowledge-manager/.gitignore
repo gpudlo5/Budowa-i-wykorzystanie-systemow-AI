@@ -30,3 +30,13 @@ Thumbs.db
 # Archiwa i logi
 *.zip
 *.log
+
+# Pliki generowane przez Handover MCP i ewaluacje
+data/processed/interviews/
+data/processed/onboarding/
+data/processed/interview_eval_results.json
+
+# Lokalne skrypty i notatki testowe
+check_*.py
+notatki_testy.md
+julia_readme.md
