@@ -1,10 +1,10 @@
 # Scenariusz wywiadu przekazania wiedzy
-## Nordwind Logistics – Anna Kowalska → Piotr Nowak
+## Northway Ltd. – Anna Kowalska → Piotr Nowak
 
 **Cel:** zebranie wiedzy operacyjnej od pracownika przekazującego obowiązki.
 
-**Osoba przekazująca:** Anna Kowalska (E001)  
-**Osoba przejmująca:** Piotr Nowak (E002)  
+**Osoba przekazująca:** Anna Kowalska (E003)  
+**Osoba przejmująca:** Piotr Nowak (E023)  
 **Dział:** Finanse
 
 ---

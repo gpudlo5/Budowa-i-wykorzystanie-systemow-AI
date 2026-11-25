@@ -1,5 +1,5 @@
 # Dokument przekazania obowiązków
-## Nordwind Logistics
+## Northway Ltd.
 
 **Wersja:** 1.0  
 **Typ dokumentu:** Szablon przekazania obowiązków  
@@ -12,10 +12,10 @@
 | Pole | Informacja |
 |---|---|
 | Pracownik przekazujący | Anna Kowalska |
-| Identyfikator | E001 |
+| Identyfikator | E003 |
 | Dział | Finanse |
 | Pracownik przejmujący | Piotr Nowak |
-| Identyfikator | E002 |
+| Identyfikator | E023 |
 | Dział | Finanse |
 | Data przekazania | Do uzupełnienia |
 | Data zakończenia pracy przez pracownika przekazującego | Do uzupełnienia |

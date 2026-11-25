@@ -1397,25 +1397,19 @@ def publish_to_onboarding(
 def handover_guidelines() -> str:
     """Udostępnia zasady bezpiecznego procesu przekazania obowiązków."""
     return """
-    PROCES HANDOVER – NORDWIND LOGISTICS
+    PROCES HANDOVER - NORTHWAY LTD.
 
-    1. Zidentyfikuj pracownika przekazującego obowiązki.
-    2. Zidentyfikuj pracownika przejmującego obowiązki.
-    3. Użyj collect_footprint, aby zebrać ślad pracy.
-    4. Użyj extract_open_items, aby wyodrębnić sprawy wymagające uwagi.
-    5. Przeanalizuj zgłoszenia, wątki i zadania cykliczne.
-    6. Zidentyfikuj klientów powiązanych ze sprawami.
-    7. Przeprowadź wywiad z pracownikiem.
-    8. Użyj generate_handover_doc, aby przygotować dokument.
-    9. Wskaż źródła informacji.
-    10. Oznacz dane wymagające potwierdzenia.
-    11. Przedstaw dokument obu stronom do weryfikacji.
-    12. Użyj approve_handover_doc po potwierdzeniu dokumentu przez obie strony.
-    13. Użyj publish_to_onboarding, aby opublikować zatwierdzony dokument.
-    14. Nie zmieniaj automatycznie przypisania zadań.
+    Serwer dziala w imieniu pracownika z KM_USER_ID. Nie da sie go zmienic w rozmowie.
 
-    Dane demonstracyjne nie zastępują rzeczywistej weryfikacji
-    przez upoważnionego pracownika.
+    1. Zbierz slad pracy przekazujacego: collect_footprint, extract_open_items.
+    2. Przeprowadz wywiad: interview_next_question (odpowiada przekazujacy, we wlasnej sesji).
+       Zadawaj pytania po kolei, zapisuj odpowiedzi doslownie, niczego nie dopowiadaj.
+    3. Wygeneruj dokument: generate_handover_doc. Wskazuj zrodla (ID zgloszen, watkow, dokumentow).
+    4. Przekazujacy i przejmujacy potwierdzaja dokument, kazdy w swojej sesji: confirm_handover_doc.
+    5. Przelozony przekazujacego zatwierdza (approve_handover_doc) i publikuje (publish_to_onboarding).
+    6. Nie zmieniaj przypisan zadan ani zgloszen. Brak odpowiedzi nie oznacza zgody.
+
+    Dane demonstracyjne nie zastepuja weryfikacji przez upowaznionego pracownika.
     """
 
 
@@ -1425,8 +1419,8 @@ def handover_guidelines() -> str:
 
 @mcp.prompt()
 def handover(
-    from_employee_id: str = "E001",
-    to_employee_id: str = "E002"
+    from_employee_id: str = "E003",
+    to_employee_id: str = "E023"
 ) -> str:
     """Przygotowuje instrukcję procesu przekazania obowiązków."""
 
@@ -1445,6 +1439,8 @@ def handover(
         "collect_footprint. Następnie użyj extract_open_items. "
         "Po analizie przygotuj dokument za pomocą generate_handover_doc. "
         "Nie zmieniaj automatycznie przypisań zadań."
+        "Po wygenerowaniu dokumentu poproś o potwierdzenia stron (confirm_handover_doc, "
+        "każda strona w swojej sesji), a zatwierdzenie zostaw przełożonemu. "
     )
 
 

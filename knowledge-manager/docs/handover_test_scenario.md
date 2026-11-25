@@ -1,6 +1,8 @@
 ### Test integracyjny MCP – Claude Desktop
 
-**Scenariusz:** Przekazanie obowiązków Anna Kowalska (E001) → Piotr Nowak (E002).
+**Scenariusz:** Przekazanie obowiązków Anna Kowalska (E003) → Piotr Nowak (E023).
+
+> **Uwaga:** wyniki poniżej pochodzą z wersji na starych danych (przed integracją) – test do powtórzenia w etapie 6.
 
 **Wynik:** POZYTYWNY
 
@@ -30,11 +32,11 @@ Serwer `nordwind-handover` został poprawnie połączony z Claude Desktop. Claud
 
 **Data testu:** 22.11.2026
 
-**Cel:** Sprawdzenie poprawności połączenia serwera Nordwind Handover MCP z klientem Claude Desktop oraz weryfikacja udostępniania narzędzi, zasobów i promptów.
+**Cel:** Sprawdzenie poprawności połączenia serwera Northway Handover MCP z klientem Claude Desktop oraz weryfikacja udostępniania narzędzi, zasobów i promptów.
 
 ### Środowisko testowe
 - Klient MCP: Claude Desktop
-- Serwer: Nordwind Handover
+- Serwer: Northway Handover
 - Transport: stdio
 - Środowisko: Python virtual environment (.venv)
 - Narzędzie diagnostyczne: MCP Inspector
@@ -47,13 +49,13 @@ Serwer `nordwind-handover` został poprawnie połączony z Claude Desktop. Claud
 | Pobranie listy narzędzi | 5 dostępnych narzędzi | Pozytywny |
 | Pobranie listy zasobów | Dostępny zasób handover://guidelines | Pozytywny |
 | Pobranie listy promptów | Dostępny prompt handover | Pozytywny |
-| Wywołanie get_handover_overview | Zestawienie Anna E001 → Piotr E002 | Pozytywny |
+| Wywołanie get_handover_overview | Zestawienie Anna E003 → Piotr E023 | Pozytywny |
 | Test promptu w MCP Inspector | Zwrócenie treści prompts/handover.md | Pozytywny |
 
 ### Wynik testu scenariusza Anna → Piotr
 
-- Pracownik przekazujący: Anna Kowalska (E001).
-- Pracownik przejmujący: Piotr Nowak (E002).
+- Pracownik przekazujący: Anna Kowalska (E003).
+- Pracownik przejmujący: Piotr Nowak (E023).
 - Zgłoszenia: 8, w tym 7 otwartych i 1 zakończone.
 - Wątki komunikacyjne: 5.
 - Zadania cykliczne: 5.
@@ -76,4 +78,4 @@ Prompt korzysta z instrukcji zapisanych w pliku `prompts/handover.md`.
 - Test nie potwierdza produkcyjnego bezpieczeństwa serwera ani egzekwowania uprawnień użytkowników.
 - Przekazanie obowiązków nie powoduje automatycznej zmiany przypisań.
 
-**Wniosek:** Integracja serwera Nordwind Handover MCP z Claude Desktop działa poprawnie w testowanym scenariuszu. Narzędzia, zasób i prompt są udostępniane przez serwer.
+**Wniosek:** Integracja serwera Northway Handover MCP z Claude Desktop działa poprawnie w testowanym scenariuszu. Narzędzia, zasób i prompt są udostępniane przez serwer.
