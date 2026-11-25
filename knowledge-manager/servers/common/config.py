@@ -57,6 +57,9 @@ TICKET_THREAD_ACL = ["all"]
 # Prefiks flag uprawnien w metadanych ChromaDB: acl_all, acl_finanse, ...
 ACL_PREFIX = "acl_"
 
+# Pracownik, w imieniu ktorego dziala serwer (ustawiany w claude_desktop_config, sekcja "env").
+CURRENT_USER_ID = os.environ.get("KM_USER_ID", "").strip() or None
+
 # ---------------------------------------------------------------- wyszukiwanie
 
 DEFAULT_TOP_K = 5
