@@ -981,7 +981,7 @@ def generate_handover_doc(
 
     if completed_tickets:
         lines.extend([
-            "| ID zgłoszenia | Sprawa | Status | Termin | Źródło |",
+            "| ID zgłoszenia | Sprawa | Status | Data zgłoszenia | Źródło |",
             "|---|---|---|---|---|",
         ])
 
@@ -990,7 +990,7 @@ def generate_handover_doc(
                 f"| {ticket.get('ticket_id', '')} "
                 f"| {ticket.get('title', '')} "
                 f"| {translate_status(ticket.get('status', ''))} "
-                f"| {ticket.get('due_date', 'Brak terminu')} "
+                f"| {ticket.get('created_at', '')[:10]} "
                 f"| {ticket.get('source_reference', '')} |"
             )
     else:
