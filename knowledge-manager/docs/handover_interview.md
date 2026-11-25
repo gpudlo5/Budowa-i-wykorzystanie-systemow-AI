@@ -26,10 +26,10 @@ Agent Knowledge Manager powinien rozpocząć rozmowę od wyjaśnienia celu wywia
 ## 3. Bieżące sprawy i zgłoszenia
 
 1. Które zgłoszenia wymagają pilnego działania?
-2. Czy w sprawie T001 pojawiły się nowe informacje dotyczące faktury FV/2026/101?
-3. Czy udało się wyjaśnić rozbieżność w zgłoszeniu T002?
-4. Czy klient z T003 przesłał brakujące potwierdzenie wykonania usługi?
-5. Na jakim etapie jest przygotowanie raportu VAT (T004)?
+2. Na jakim etapie są Twoje otwarte zgłoszenia i jaki jest następny krok w każdym z nich?
+3. Czy w projektach, w których uczestniczysz, stosujesz tymczasowe obejścia, o których Piotr musi wiedzieć?
+4. Czy któreś z zamkniętych spraw mogą wrócić, np. powtarzające się rozbieżności z kontrahentem?
+5. Czy po zmianach w systemach (np. aktualizacjach) coś trzeba sprawdzać albo poprawiać ręcznie?
 6. Czy są inne sprawy, które nie zostały jeszcze zarejestrowane w systemie?
 
 ## 4. Klienci i kontakty
@@ -42,7 +42,7 @@ Agent Knowledge Manager powinien rozpocząć rozmowę od wyjaśnienia celu wywia
 
 ## 5. Procedury i wiedza praktyczna
 
-1. Czy procedura rozliczania faktur (D002) opisuje cały proces?
+1. Czy procedury Twojego obszaru opisują cały proces, czy coś robisz inaczej niż w dokumencie?
 2. Jak postępujesz w przypadku nietypowych rozbieżności na fakturach?
 3. Jakie błędy najczęściej pojawiają się podczas zamknięcia miesiąca?
 4. Czy masz własną listę kontrolną lub dodatkowe materiały?
@@ -63,13 +63,14 @@ Agent Knowledge Manager powinien rozpocząć rozmowę od wyjaśnienia celu wywia
 3. Czy istnieją procesy zależne od wiedzy tylko jednej osoby?
 4. Co może pójść nie tak podczas przejmowania obowiązków?
 5. Jakie działania zapobiegawcze rekomendujesz?
+6. Jakie dostępy, uprawnienia lub fizyczne nośniki (np. tokeny, klucze) trzeba przekazać przed Twoim odejściem?
 
 ## 8. Wiedza nieformalna
 
 1. Jakie praktyczne wskazówki wynikają z Twojego doświadczenia?
 2. Czy istnieją nieformalne zasady współpracy z innymi działami?
 3. Czy są ważne informacje, których nie ma w dokumentach?
-4. Które decyzje wymagają konsultacji z przełożonym?
+4. Które decyzje wymagają konsultacji z przełożonym lub zarządem?
 5. Jakich błędów Piotr powinien szczególnie unikać?
 
 ## 9. Podsumowanie wywiadu

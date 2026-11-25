@@ -1,245 +1,259 @@
-# Knowledge Manager – Nordwind Logistics
+# Knowledge Manager – Northway Ltd.
 
 ## 1. Opis projektu
 
-Knowledge Manager to prototyp systemu zarządzania wiedzą organizacyjną dla fikcyjnej firmy Nordwind Logistics.
+Knowledge Manager to prototyp systemu zarządzania wiedzą organizacyjną dla fikcyjnej firmy logistycznej Northway Ltd. Wszystkie dane są syntetyczne.
 
-Celem projektu jest ułatwienie pracownikom wyszukiwania informacji w dokumentacji firmowej oraz wspieranie procesu przekazywania obowiązków pomiędzy pracownikami.
+Projekt ma dwa cele:
 
-System wykorzystuje architekturę agentową, model językowy (LLM) oraz protokół Model Context Protocol (MCP).
+- **wyszukiwanie wiedzy** – pracownik zadaje pytanie po polsku i dostaje odpowiedź opartą na dokumentach, zgłoszeniach i wątkach firmy, ze wskazaniem źródeł i z uwzględnieniem swoich uprawnień;
+- **przekazanie obowiązków (handover)** – gdy pracownik odchodzi, system zbiera ślad jego pracy, przeprowadza z nim wywiad o wiedzy nieformalnej i przygotowuje dokument przekazania dla następcy.
 
-Główne funkcjonalności:
-- semantyczne wyszukiwanie dokumentów firmowych,
-- kontrola dostępu do dokumentów na podstawie ról pracowników (ACL),
-- prezentowanie odpowiedzi wraz z identyfikatorami źródeł,
-- pobieranie informacji o obowiązkach i zadaniach pracownika,
-- wspieranie procesu przekazywania obowiązków (handover).
+System działa jako dwa serwery Model Context Protocol (MCP) używane przez Claude Desktop.
 
-Projekt ma charakter demonstracyjny i wykorzystuje syntetyczne dane.
+## 2. Architektura
 
-## 2. Architektura systemu
+| Element | Rola |
+|---|---|
+| **Claude Desktop** | Klient LLM, z którym rozmawia pracownik. |
+| **Northway Search MCP** (`servers/search/`) | Wyszukiwanie semantyczne z filtrowaniem według uprawnień, odczyt dokumentów, audyt. |
+| **Northway Handover MCP** (`servers/handover/`) | Proces przekazania obowiązków: ślad pracy, wywiad, dokument, potwierdzenia, publikacja. |
+| **Wspólny moduł** (`servers/common/`) | Konfiguracja (`config.py`), dane organizacji (`org.py`), wczytywanie plików (`data.py`), uprawnienia (`access.py`). |
+| **ChromaDB** | Wektorowa baza fragmentów dokumentów, zgłoszeń i wątków (`data/processed/chroma_db/`). |
+| **Model embeddingów** | `OPI-PIB/PolDense-400M` (sentence-transformers), polski model do wyszukiwania. |
+| **Dane** (`data/`) | Syntetyczne dane firmy: CSV, JSON i dokumenty Markdown (opis w `data/README.md`). |
 
-Projekt składa się z następujących elementów:
+Oba serwery korzystają z tej samej konfiguracji i tych samych reguł uprawnień, więc wyszukiwarka i proces przekazania zawsze zgadzają się co do tego, kto co widzi.
 
-- **Claude Desktop** – klient LLM wykorzystywany do interakcji z systemem.
-- **Nordwind Search MCP** – serwer odpowiedzialny za semantyczne wyszukiwanie dokumentów i filtrowanie wyników według uprawnień ACL.
-- **Nordwind Handover MCP** – serwer udostępniający informacje potrzebne do przekazania obowiązków.
-- **ChromaDB** – wektorowa baza danych przechowująca reprezentacje dokumentów.
-- **Sentence Transformers** – model embeddingowy `paraphrase-multilingual-MiniLM-L12-v2`.
-- **CSV** – źródło syntetycznych danych organizacyjnych.
+### Search MCP
 
-### Serwer Search MCP
+| Rodzaj | Nazwa | Opis |
+|---|---|---|
+| Narzędzie | `search_documents` | Wyszukiwanie semantyczne fragmentów (pytanie pełnym zdaniem po polsku); zwraca tylko to, do czego użytkownik ma dostęp. |
+| Narzędzie | `get_document` | Pełna treść dokumentu, zgłoszenia lub wątku. |
+| Narzędzie | `check_access` | Czy bieżący użytkownik ma dostęp do wskazanego dokumentu. |
+| Narzędzie | `log_event` | Zapis własnego zdarzenia w dzienniku audytu. |
+| Zasób | `search://guidelines` | Zasady wyszukiwania i odpowiadania (źródła, brak zgadywania, poufność). |
+| Zasób | `search://catalog` | Lista dokumentów dostępnych dla bieżącego użytkownika (bez treści). |
+| Zasób | `doc://{doc_id}` | Pełna treść dokumentu, z tymi samymi uprawnieniami co `get_document`. |
+| Zasób | `org://me`, `org://processes`, `org://systems` | Profil użytkownika, procesy i systemy firmy. |
+| Prompt | `ask_knowledge_base` | Odpowiedź na pytanie wyłącznie na podstawie bazy wiedzy, ze źródłami. |
+| Prompt | `compare_procedures` | Porównanie różnych wersji procedury na dany temat. |
+| Prompt | `onboarding_brief` | Wprowadzenie dla nowego pracownika: procesy działu i dokumenty do przeczytania. |
 
-Udostępnia narzędzie:
-- `search_documents` – wyszukuje dokumenty semantycznie, uwzględniając uprawnienia pracownika.
+### Handover MCP
 
-Udostępnia również zasób:
-- `search://guidelines` – wytyczne dotyczące wyszukiwania dokumentów.
+| Rodzaj | Nazwa | Opis |
+|---|---|---|
+| Narzędzia | `get_employee_info`, `get_employee_tickets`, `get_employee_threads`, `get_employee_recurring_tasks` | Dane pracownika i jego aktywność. |
+| Narzędzia | `get_handover_overview`, `collect_footprint`, `extract_open_items` | Ślad pracy i sprawy wymagające uwagi. |
+| Narzędzie | `interview_next_question` | Wywiad z pracownikiem przekazującym (37 pytań w 7 obszarach, z `docs/handover_interview.md`). |
+| Narzędzie | `generate_handover_doc` | Dokument przekazania z danych systemowych i odpowiedzi z wywiadu. |
+| Narzędzie | `confirm_handover_doc` | Potwierdzenie zapoznania się z dokumentem przez przekazującego albo przejmującego. |
+| Narzędzie | `approve_handover_doc` | Zatwierdzenie dokumentu przez przełożonego przekazującego. |
+| Narzędzie | `publish_to_onboarding` | Publikacja zatwierdzonego dokumentu w katalogu onboardingowym. |
+| Zasób | `handover://guidelines` | Zasady procesu przekazania. |
+| Prompt | `handover` | Prowadzi cały proces (domyślnie Anna Kowalska E003 → Piotr Nowak E023). |
 
-### Serwer Handover MCP
+## 3. Proces przekazania obowiązków
 
-Udostępnia pięć narzędzi:
-- `get_employee_info`
-- `get_employee_tickets`
-- `get_employee_threads`
-- `get_employee_recurring_tasks`
-- `get_handover_overview`
+Scenariusz demonstracyjny: **Anna Kowalska (E003)**, Starszy Specjalista ds. Rozliczeń, odchodzi 2026-12-15. Jej obowiązki przejmuje **Piotr Nowak (E023)**. Przełożoną obojga jest **Katarzyna Zielińska (E002)**.
 
-Udostępnia zasób:
-- `handover://guidelines`
+1. **Ślad pracy** – `collect_footprint` i `extract_open_items` zbierają dokumenty, projekty, zgłoszenia, wątki, zadania cykliczne i kontrahentów przekazującego oraz wskazują otwarte sprawy.
+2. **Wywiad** – `interview_next_question` zadaje przekazującemu kolejne pytania o zakres obowiązków, bieżące sprawy, klientów, procedury, terminy, ryzyka i wiedzę nieformalną. Odpowiedzi są zapisywane w `data/processed/interviews/`.
+3. **Dokument** – `generate_handover_doc` tworzy dokument według szablonu `docs/handover_template.md`. Dane z systemów mają podane źródła (ID zgłoszeń, wątków, dokumentów), a odpowiedzi z wywiadu są w osobnej sekcji jako informacje niezweryfikowane.
+4. **Potwierdzenia** – przekazujący i przejmujący, każdy we własnej sesji, potwierdzają dokument narzędziem `confirm_handover_doc`.
+5. **Zatwierdzenie** – przełożony przekazującego zatwierdza dokument (`approve_handover_doc`) po obu potwierdzeniach.
+6. **Publikacja** – `publish_to_onboarding` sprawdza, czy przejmujący ma dostęp do wszystkich dokumentów wskazanych w przekazaniu, i publikuje dokument w `data/processed/onboarding/`.
 
-Udostępnia prompt:
-- `handover` – wspiera przygotowanie procesu przekazania obowiązków pomiędzy pracownikami.
+System nie zmienia automatycznie przypisań zgłoszeń ani zadań.
 
-## 3. Struktura projektu
+## 4. Tożsamość i uprawnienia
+
+**Użytkownik** jest ustawiany w konfiguracji serwera zmienną środowiskową `KM_USER_ID` (np. `E023`), a nie w rozmowie. Model nie może zmienić tożsamości ani działać w imieniu innej osoby. Zmiana użytkownika wymaga zmiany konfiguracji i ponownego uruchomienia Claude Desktop.
+
+**Dostęp do dokumentów** wynika z grupy dostępu pracownika (`access_group` w `employees.csv`: `zarzad`, `finanse`, `hr`, `sprzedaz`, `operacje`, `it`, `obsluga_klienta`) i kolumny `allowed_groups` dokumentu w `documents_plan.csv`. Dokument z `all` jest dostępny dla wszystkich. Zgłoszenia i wątki są dostępne dla wszystkich. Dla brakującego dokumentu i dokumentu bez uprawnień system zwraca ten sam komunikat, żeby nie ujawniać, że dokument istnieje.
+
+**Uprawnienia w procesie przekazania:**
+
+| Czynność | Kto może |
+|---|---|
+| Przeglądanie danych i śladu pracy pracownika | on sam, jego przełożony, osoby z jego działu |
+| Odpowiadanie na pytania wywiadu | tylko pracownik przekazujący |
+| Potwierdzenie dokumentu | pracownik przekazujący i przejmujący (każdy za siebie) |
+| Zatwierdzenie i publikacja | przełożony pracownika przekazującego |
+
+Wyszukiwania, odczyty dokumentów i sprawdzenia dostępu są zapisywane w dzienniku audytu `data/processed/audit_log.jsonl`.
+
+## 5. Struktura projektu
 
 ```text
 knowledge-manager/
 ├── data/
-│   ├── raw/
-│   │   ├── employees.csv
-│   │   ├── projects.csv
-│   │   ├── documents.csv
-│   │   ├── acl.csv
-│   │   ├── clients.csv
-│   │   ├── tickets.csv
-│   │   ├── threads.csv
-│   │   └── recurring_tasks.csv
-│   ├── processed/
-│   └── validate_data.py
+│   ├── README.md                 # opis danych syntetycznych
+│   ├── documents/                # 22 dokumenty firmowe (D001–D022, Markdown)
+│   ├── documents_plan.csv        # metadane dokumentów, w tym allowed_groups
+│   ├── employees.csv, roles.csv, departments.csv, access_groups.csv
+│   ├── processes.csv, systems.csv, projects.csv, counterparties.csv
+│   ├── tickets.json, threads.json, recurring_tasks.json
+│   ├── interview_scenario.json   # fakty do ewaluacji wywiadu
+│   ├── validate_data.py          # walidacja spójności danych
+│   └── processed/                # pliki generowane (baza, audyt, dokumenty) – poza repozytorium
 ├── servers/
+│   ├── common/                   # config.py, org.py, data.py, access.py
 │   ├── search/
-│   │   ├── search_engine.py
-│   │   └── server.py
-│   ├── handover/
-│   │   └── server.py
-│   └── documents/
-├── governance/
-├── host/
-├── ui/
-├── tests/
-├── docs/
-│   ├── evaluation.md
-│   ├── test_questions.md
-│   ├── handover_template.md
-│   ├── handover_interview.md
-│   └── handover_test_scenario.md
+│   │   ├── server.py             # Search MCP
+│   │   ├── search_engine.py      # wyszukiwanie w ChromaDB z filtrem uprawnień
+│   │   ├── ingest.py             # budowa bazy wektorowej
+│   │   └── smoke_test.py         # test trafności i uprawnień
+│   └── handover/
+│       ├── server.py             # Handover MCP
+│       └── eval_interview.py     # ewaluacja wywiadu
+├── docs/                         # szablon i scenariusz wywiadu, scenariusze testowe, ewaluacja
 ├── prompts/
-│   └── handover.md
-├── requirements.txt
-├── .gitignore
+│   └── handover.md               # instrukcja procesu przekazania dla modelu
+├── pyproject.toml, uv.lock       # zależności (uv)
+├── requirements.txt              # zależności dla pip
 └── README.md
 ```
 
-## 4. Wymagania
+## 6. Wymagania
 
-Do uruchomienia projektu potrzebne są:
-
-- Python 3.13 lub kompatybilna wersja.
-- Node.js i npm (potrzebne do uruchomienia MCP Inspector).
+- Python 3.10 lub nowszy.
+- [uv](https://docs.astral.sh/uv/) – menedżer środowiska i zależności.
 - Claude Desktop.
-- Połączenie z internetem przy pierwszym pobieraniu modelu embeddingowego.
+- Połączenie z internetem przy pierwszym uruchomieniu (pobranie modelu embeddingów z Hugging Face).
+- Opcjonalnie Node.js – tylko do uruchomienia MCP Inspector (`uv run mcp dev ...`).
 
-## 5. Instalacja
-
-Sklonuj repozytorium:
+## 7. Instalacja i przygotowanie danych
 
 ```bash
 git clone https://github.com/gpudlo5/Budowa-i-wykorzystanie-systemow-AI.git
-cd Budowa-i-wykorzystanie-systemow-AI
+cd Budowa-i-wykorzystanie-systemow-AI/knowledge-manager
+uv sync
 ```
 
-Utwórz środowisko wirtualne:
+`uv sync` tworzy środowisko `.venv` z wersjami zapisanymi w `uv.lock` (m.in. `mcp` 1.x – projekt nie jest zgodny z `mcp` 2.x). Wszystkie polecenia uruchamiaj z katalogu `knowledge-manager` przez `uv run`. Nowe pakiety dodawaj poleceniem `uv add`, nie `pip install`.
+
+Alternatywnie, bez uv: `pip install -r requirements.txt` w aktywnym środowisku wirtualnym.
+
+Następnie przygotuj dane:
 
 ```bash
-python3 -m venv .venv
+uv run data/validate_data.py       # sprawdzenie spójności danych
+uv run servers/search/ingest.py    # budowa bazy wektorowej w data/processed/chroma_db/
 ```
 
-Aktywuj środowisko:
+Bazę trzeba zbudować ponownie po każdej zmianie dokumentów albo modelu embeddingów.
 
-macOS / Linux:
+## 8. Konfiguracja
 
-```bash
-source .venv/bin/activate
-```
+### Zmienne środowiskowe
 
-Zainstaluj zależności:
+| Zmienna | Znaczenie | Domyślnie |
+|---|---|---|
+| `KM_USER_ID` | Pracownik, w imieniu którego działa serwer (np. `E023`). Wymagana. | brak |
+| `KM_DATA_DIR` | Katalog z danymi. | `data/` |
+| `KM_EMBEDDING_MODEL` | Model embeddingów (po zmianie trzeba przebudować bazę). | `OPI-PIB/PolDense-400M` |
+| `KM_QUERY_PREFIX` | Przedrostek pytania wymagany przez model. | `[query]: ` |
+| `KM_MAX_DISTANCE` | Opcjonalny próg odległości odrzucający słabe wyniki. | wyłączony |
+| `HF_HUB_OFFLINE` | `1` = nie sprawdzaj aktualizacji modelu w Hugging Face (gdy model jest już pobrany). | – |
 
-```bash
-pip install -r requirements.txt
-```
+### Claude Desktop
 
-## 6. Walidacja danych
+Plik konfiguracyjny:
 
-Przed uruchomieniem systemu można sprawdzić poprawność danych:
-
-```bash
-python data/validate_data.py
-```
-
-Walidator sprawdza m.in.:
-- unikalność identyfikatorów,
-- poprawność relacji między danymi,
-- powiązania pracowników, klientów, zgłoszeń i zadań,
-- poprawność przypisań dokumentów i uprawnień ACL.
-
-## 7. Konfiguracja Claude Desktop
-
-Plik konfiguracyjny Claude Desktop w systemie macOS znajduje się w:
-
-```text
-~/Library/Application Support/Claude/claude_desktop_config.json
-```
-
-Do konfiguracji `mcpServers` należy dodać wpisy dla obu serwerów:
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```json
 {
   "mcpServers": {
-    "nordwind-handover": {
-      "command": "/ABSOLUTE/PATH/TO/knowledge-manager/.venv/bin/python",
-      "args": [
-        "/ABSOLUTE/PATH/TO/knowledge-manager/servers/handover/server.py"
-      ]
+    "northway-search": {
+      "command": "uv",
+      "args": ["--directory", "C:\\SCIEZKA\\DO\\knowledge-manager", "run", "servers/search/server.py"],
+      "env": { "KM_USER_ID": "E023", "ANONYMIZED_TELEMETRY": "False" }
     },
-    "nordwind-search": {
-      "command": "/ABSOLUTE/PATH/TO/knowledge-manager/.venv/bin/python",
-      "args": [
-        "/ABSOLUTE/PATH/TO/knowledge-manager/servers/search/server.py"
-      ]
+    "northway-handover": {
+      "command": "uv",
+      "args": ["--directory", "C:\\SCIEZKA\\DO\\knowledge-manager", "run", "servers/handover/server.py"],
+      "env": { "KM_USER_ID": "E023" }
     }
   }
 }
 ```
 
-Należy zastąpić ścieżki przykładowe rzeczywistą ścieżką do projektu.
+- Ścieżkę zastąp rzeczywistą ścieżką do katalogu `knowledge-manager` (w systemie Windows z podwójnymi `\\`).
+- Ustaw ten sam `KM_USER_ID` dla obu serwerów – w jednej sesji jesteś jedną osobą.
+- Jeśli Claude Desktop nie znajduje `uv`, podaj pełną ścieżkę (`where.exe uv` w Windows, `which uv` w macOS).
+- Po każdej zmianie zamknij Claude Desktop całkowicie (także z zasobnika systemowego) i uruchom ponownie.
+- Plik `claude_desktop_config.json` zawiera lokalne ścieżki i jest wykluczony z repozytorium.
 
-Po zapisaniu konfiguracji należy ponownie uruchomić Claude Desktop.
+## 9. Testy i ewaluacja
 
-## 8. Uruchamianie i testowanie
+```bash
+uv run servers/search/smoke_test.py           # trafność wyszukiwania i uprawnienia (po ingest.py)
+uv run servers/handover/eval_interview.py     # ewaluacja wywiadu przekazania
+```
 
-### Wyszukiwanie dokumentów
+Oba skrypty kończą się kodem 0 przy zaliczeniu i zapisują wyniki w `data/processed/` (`smoke_test_results.json`, `interview_eval_results.json`).
 
-Serwer Search MCP można uruchomić przez Claude Desktop po skonfigurowaniu połączenia MCP.
+**Search (`smoke_test.py`):**
 
-Przykładowe pytanie:
+- trafność: 10 pytań z dokumentem oczekiwanym w pierwszych 5 wynikach (próg 8/10);
+- uprawnienia: 5 prób dostępu do dokumentów poufnych (w tym prompt injection w pytaniu) przez wyszukiwanie, `check_access` i `get_document` oraz kontrola pozytywna;
+- pytania bez odpowiedzi w bazie: odległości najlepszych wyników, informacyjnie, do kalibracji `KM_MAX_DISTANCE`.
 
-> Jak należy weryfikować faktury od dostawców?
+**Wywiad (`eval_interview.py`):** sprawdza, czy wywiad wydobywa 5 faktów (H01–H05) z `data/interview_scenario.json`, których nie ma w dokumentach, zgłoszeniach ani wątkach. Symulowany pracownik ujawnia fakt tylko wtedy, gdy pytanie dotyczy jego tematu. Fakt jest zaliczony, gdy w sekcji wywiadu dokumentu przekazania występują co najmniej 3 z 5 jego słów kluczowych. Próg: 4 z 5 faktów. Kontrola negatywna (wywiad bez ujawniania faktów) musi dać 0 z 5.
 
-Pracownik powinien zostać zidentyfikowany przez swój identyfikator, np. `E002`.
+Serwery można też sprawdzić w MCP Inspector (wymaga Node.js):
 
-### Przekazywanie obowiązków
+```bash
+uv run mcp dev servers/search/server.py
+```
 
-Serwer Handover MCP udostępnia informacje o pracowniku, jego zgłoszeniach, wątkach i zadaniach cyklicznych.
+Zmienną `KM_USER_ID` ustaw przed uruchomieniem (PowerShell: `$env:KM_USER_ID = "E023"`, bash: `export KM_USER_ID=E023`).
 
-Przykładowy scenariusz:
+### Scenariusze demonstracyjne w Claude Desktop
 
-- pracownik odchodzący: Anna Kowalska (`E001`),
-- pracownik przejmujący: Piotr Nowak (`E002`).
+| Użytkownik (`KM_USER_ID`) | Scenariusz | Oczekiwany wynik |
+|---|---|---|
+| E023 Piotr Nowak (finanse) | „Jak rozliczyć delegację?” | Odpowiedź z D010 z datą dokumentu |
+| E008 Michał Szymański (sprzedaż) | „Jakie są widełki płacowe w 2026?” | Brak odpowiedzi – D021 jest dostępny tylko dla zarządu i finansów |
+| E023 | Prompt `onboarding_brief` | Procesy Księgowości i dokumenty do przeczytania |
+| E003 Anna Kowalska | Prompt `handover` → wywiad → dokument → `confirm_handover_doc` | Dokument przekazania, potwierdzenie Anny |
+| E023 | `confirm_handover_doc` | Potwierdzenie Piotra |
+| E002 Katarzyna Zielińska | `approve_handover_doc`, `publish_to_onboarding` | Zatwierdzenie i publikacja |
 
-Prompt `handover` pomaga przygotować podsumowanie obowiązków i spraw do przekazania.
+## 10. Wyniki
 
-### Testy
+| Test | Wynik |
+|---|---|
+| Trafność wyszukiwania | 10/10 (oczekiwany dokument na 1. miejscu w 9 pytaniach, na 3. w jednym) |
+| Uprawnienia | 6/6, brak wycieku dokumentów poufnych, także przy próbie prompt injection |
+| Wywiad przekazania | 5/5 faktów, kontrola negatywna 0/5 |
 
-Scenariusze testowe i wyniki ewaluacji znajdują się w katalogu `docs/`:
-- `test_questions.md`
-- `evaluation.md`
-- `handover_test_scenario.md`
+Szczegóły i wnioski: `docs/evaluation.md`. Wyniki dotyczą przygotowanego zestawu testowego i nie są formalnym potwierdzeniem jakości ani bezpieczeństwa produkcyjnego.
 
-## 9. Wyniki wstępnej ewaluacji
+## 11. Ograniczenia prototypu
 
-W ramach testów Search MCP przygotowano 10 scenariuszy obejmujących:
-- wyszukiwanie dokumentów,
-- łączenie informacji z kilku źródeł,
-- rozpoznawanie braków w dokumentacji,
-- kontrolę dostępu ACL,
-- ochronę dokumentów niedostępnych dla danego pracownika.
+- Dane są syntetyczne; system nie jest połączony z rzeczywistymi systemami ERP, CRM ani zgłoszeniowymi.
+- `KM_USER_ID` to konfiguracja, a nie uwierzytelnianie – kto ma dostęp do konfiguracji, może ustawić dowolnego pracownika.
+- Pełny proces przekazania wymaga trzech sesji (przekazujący, przejmujący, przełożony), każda z innym `KM_USER_ID`.
+- Próg odległości dla wyników wyszukiwania jest domyślnie wyłączony; przy pytaniach spoza bazy wiedzy wyniki mogą być słabo dopasowane i to model musi je odrzucić.
+- Ewaluacja wywiadu jest automatyczna i oparta na słowach kluczowych: sprawdza pokrycie tematów przez scenariusz pytań, a nie jakość rozmowy prowadzonej przez model.
+- Odpowiedzi z wywiadu trafiają do dokumentu jako informacje niezweryfikowane, w osobnej sekcji.
 
-W testach przeprowadzonych w Claude Desktop wszystkie 10 scenariuszy uzyskało wynik PASS.
+## 12. Bezpieczeństwo i prywatność
 
-Wynik dotyczy przygotowanego zestawu testowego i nie stanowi formalnego potwierdzenia bezpieczeństwa produkcyjnego systemu.
+- Uprawnienia są sprawdzane po stronie serwera przy każdym wyszukiwaniu i odczycie; model nie dostaje treści dokumentów, do których użytkownik nie ma dostępu.
+- Brakujący dokument i dokument bez uprawnień dają ten sam komunikat.
+- Zasoby nie udostępniają pełnej listy pracowników z danymi kontaktowymi.
+- Operacje są zapisywane w dzienniku audytu.
+- Przed zastosowaniem produkcyjnym potrzebne jest prawdziwe uwierzytelnianie użytkowników i integracja z firmowym systemem uprawnień.
 
-## 10. Ograniczenia prototypu
+## 13. Repozytorium
 
-- System wykorzystuje syntetyczne dane, a nie rzeczywiste dane przedsiębiorstwa.
-- Wyszukiwanie semantyczne może zwracać dokumenty o niskiej trafności.
-- Nie zastosowano jeszcze progu podobieństwa pozwalającego odrzucać nieadekwatne wyniki.
-- Serwer Handover nie implementuje produkcyjnego uwierzytelniania i autoryzacji.
-- Projekt nie jest połączony z rzeczywistymi systemami ERP, CRM ani systemami zgłoszeniowymi.
-- Wyniki zależą od jakości dostępnej dokumentacji oraz modelu językowego.
+https://github.com/gpudlo5/Budowa-i-wykorzystanie-systemow-AI
 
-## 11. Bezpieczeństwo i prywatność
-
-Projekt wykorzystuje syntetyczne dane pracowników i klientów.
-
-W serwerze Search zastosowano mechanizm ACL ograniczający dostęp do dokumentów na podstawie roli pracownika.
-
-Mechanizm ten jest elementem demonstracyjnym i wymaga dalszego rozwoju przed zastosowaniem produkcyjnym. W szczególności konieczne jest wdrożenie wiarygodnego uwierzytelniania tożsamości i kontroli uprawnień po stronie serwera.
-
-## 12. Repozytorium
-
-Kod źródłowy projektu:
-
-https://github.com/gpudlo5/Budowa-i-wykorzystanie-systemow-AI.git
-
-Projekt został przygotowany w ramach pracy zespołowej dotyczącej budowy i wykorzystania systemów AI.
+Projekt przygotowany w ramach pracy zespołowej dotyczącej budowy i wykorzystania systemów AI.
