@@ -1,69 +1,87 @@
 
-import csv
+"""
+server.py - Handover MCP (Knowledge Manager, Northway Ltd.).
+
+Przekazanie obowiazkow: slad pracy, otwarte sprawy, wywiad, dokument,
+potwierdzenia stron, zatwierdzenie przez przelozonego, publikacja.
+Uzytkownik: ze zmiennej srodowiskowej KM_USER_ID (konfiguracja serwera).
+"""
+
 import json
 import re
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from ..search.access_control import check_access
 
 from mcp.server.fastmcp import FastMCP
 
-
-# --------------------------------------------------
-# KONFIGURACJA
-# --------------------------------------------------
-
 BASE_DIR = Path(__file__).resolve().parents[2]
-DATA_DIR = BASE_DIR / "data" / "raw"
-PROCESSED_DIR = BASE_DIR / "data" / "processed"
-HANDOVER_OUTPUT_DIR = PROCESSED_DIR / "handovers"
-INTERVIEW_OUTPUT_DIR = PROCESSED_DIR / "interviews"
-ONBOARDING_OUTPUT_DIR = PROCESSED_DIR / "onboarding"
+sys.path.insert(0, str(BASE_DIR))
+
+from servers.common.access import allowed_groups, can_access  # noqa: E402
+from servers.common.config import (  # noqa: E402
+    CURRENT_USER_ID,
+    HANDOVER_DIR as HANDOVER_OUTPUT_DIR,
+    INTERVIEW_DIR as INTERVIEW_OUTPUT_DIR,
+    ONBOARDING_DIR as ONBOARDING_OUTPUT_DIR,
+    PROCESSED_DIR,
+)
+from servers.common.data import load_csv, load_json, split_ids  # noqa: E402
+from servers.common.org import Org  # noqa: E402
+
 INTERVIEW_FILE = BASE_DIR / "docs" / "handover_interview.md"
 PROMPT_FILE = BASE_DIR / "prompts" / "handover.md"
 
-mcp = FastMCP("Nordwind Handover")
+mcp = FastMCP("Northway Handover")
+org = Org()
 
 CLOSED_STATUSES = {
-    "completed",
-    "closed",
-    "resolved",
-    "cancelled",
-    "done"
+    "zamknięte", "zamknięty", "zakończone", "zakończony",
+    "completed", "closed", "resolved", "cancelled", "done",
 }
-
 
 # --------------------------------------------------
 # FUNKCJE POMOCNICZE
 # --------------------------------------------------
 
-def load_csv(filename: str) -> list[dict]:
-    """Odczytuje dane z pliku CSV."""
-    file_path = DATA_DIR / filename
-
-    if not file_path.exists():
-        raise FileNotFoundError(f"Nie znaleziono pliku: {file_path}")
-
-    with open(file_path, "r", encoding="utf-8-sig", newline="") as file:
-        return list(csv.DictReader(file))
-
 
 def find_employee(employee_id: str) -> dict:
-    """Wyszukuje pracownika po identyfikatorze."""
-    employees = load_csv("employees.csv")
-
-    employee = next(
-        (
-            item for item in employees
-            if item["employee_id"] == employee_id
-        ),
-        None
-    )
-
+    """Pracownik z Org (imie, nazwisko, dzial, rola, przelozony, grupa dostepu)."""
+    employee = org.get_employee(employee_id)
     if employee is None:
         raise ValueError(f"Nie znaleziono pracownika: {employee_id}")
-
     return employee
+
+
+def _current_user() -> dict:
+    """Pracownik, w imieniu ktorego dziala serwer (KM_USER_ID)."""
+    if CURRENT_USER_ID is None:
+        raise ValueError(
+            "Brak KM_USER_ID w konfiguracji serwera (claude_desktop_config.json, sekcja env)."
+        )
+    return find_employee(CURRENT_USER_ID)
+
+
+def _require_view(employee_id: str) -> dict:
+    """Dane pracownika widzi on sam, jego przelozony i osoby z jego dzialu."""
+    me = _current_user()
+    employee = find_employee(employee_id)
+    if (
+        me["employee_id"] in (employee["employee_id"], employee["manager_id"])
+        or me["department_id"] == employee["department_id"]
+    ):
+        return me
+    raise PermissionError("Brak uprawnien do danych tego pracownika.")
+
+
+def _require_manager_of(employee_id: str) -> dict:
+    """Akcja dozwolona tylko dla przelozonego wskazanego pracownika."""
+    me = _current_user()
+    if me["employee_id"] != find_employee(employee_id)["manager_id"]:
+        raise PermissionError(
+            "Te czynnosc moze wykonac tylko przelozony pracownika przekazujacego."
+        )
+    return me
 
 
 def format_result(data) -> str:
@@ -258,90 +276,59 @@ def collect_footprint_data(
     access_check_employee_id: str = None
 ) -> dict:
     """
-    Zbiera informacje o pracy pracownika:
-    dokumenty, projekty, zgłoszenia, wątki,
-    zadania cykliczne, klientów i dostępy.
+    Zbiera slad pracy pracownika: dokumenty, projekty, zgloszenia, watki,
+    zadania cykliczne, kontrahentow i dokumenty dostepne dla przejmujacego.
     """
-
     employee = find_employee(employee_id)
 
-    # 1. Dokumenty napisane przez pracownika
-    all_documents = load_csv("documents.csv")
+    # 1-2. Dokumenty napisane i posiadane przez pracownika
+    all_documents = load_csv("documents_plan.csv")
+    authored_documents = [d for d in all_documents if d["author_id"] == employee_id]
+    owned_documents = [d for d in all_documents if d["owner_id"] == employee_id]
 
-    authored_documents = [
-        doc for doc in all_documents
-        if doc["author_id"] == employee_id
-    ]
-
-    # 2. Dokumenty, których pracownik jest właścicielem
-    owned_documents = [
-        doc for doc in all_documents
-        if doc["owner_id"] == employee_id
-    ]
-
-    # 3. Projekty, których pracownik jest właścicielem
+    # 3. Projekty: wlasciciel albo uczestnik
     projects = [
-        project for project in load_csv("projects.csv")
-        if project["owner_id"] == employee_id
+        p for p in load_csv("projects.csv")
+        if p["owner_id"] == employee_id
+        or employee_id in split_ids(p["participant_ids"])
     ]
 
-    # 4. Zgłoszenia przypisane do pracownika
-    tickets = [
-        item for item in load_csv("tickets.csv")
-        if item["assigned_to"] == employee_id
-    ]
+    # 4. Zgloszenia przypisane do pracownika
+    tickets = [t for t in load_json("tickets.json") if t["assignee_id"] == employee_id]
 
-    # 5. Wątki przypisane do pracownika
+    # 5. Watki, w ktorych pracownik pisal
     threads = [
-        item for item in load_csv("threads.csv")
-        if item["assigned_to"] == employee_id
+        t for t in load_json("threads.json")
+        if any(m["author_id"] == employee_id for m in t["messages"])
     ]
 
-    # 6. Zadania cykliczne przypisane do pracownika
+    # 6. Zadania cykliczne: wlasciciel albo wspolpracownik
     tasks = [
-        item for item in load_csv("recurring_tasks.csv")
-        if item["assigned_to"] == employee_id
+        t for t in load_json("recurring_tasks.json")
+        if t["owner_id"] == employee_id or employee_id in t["collaborators"]
     ]
 
-    # 7. Klienci powiązani ze zgłoszeniami i wątkami
-    client_ids = {
-        item["client_id"]
-        for item in tickets + threads
-        if item.get("client_id")
-    }
-
+    # 7. Kontrahenci: ze zgloszen albo pracownik jest ich opiekunem/kontaktem
+    counterparty_names = {t["counterparty"] for t in tickets if t.get("counterparty")}
     clients = [
-        client for client in load_csv("clients.csv")
-        if client["client_id"] in client_ids
+        c for c in load_csv("counterparties.csv")
+        if c["name"] in counterparty_names
+        or employee_id in (c["account_owner_id"], c["finance_contact_id"])
     ]
 
-    # 8. Dokumenty, do których pracownik ma dostęp
-    # Jeśli wskazano pracownika przejmującego, sprawdzamy jego uprawnienia.
+    # 8. Dokumenty dostepne dla pracownika przejmujacego (albo samego pracownika)
     access_employee_id = access_check_employee_id or employee_id
-
-    accessible_documents = []
-
-    for document in all_documents:
-        if check_access(access_employee_id, document["doc_id"]):
-            acl_entries = load_csv("acl.csv")
-
-            matching_entry = next(
-                (
-                    entry for entry in acl_entries
-                    if entry["doc_id"] == document["doc_id"]
-                ),
-                None
-            )
-
-            accessible_documents.append({
-                "doc_id": document["doc_id"],
-                "title": document["title"],
-                "department": document["department"],
-                "allowed_roles": (
-                    matching_entry["allowed_roles"].split(";")
-                    if matching_entry else []
-                )
-            })
+    department_names = org.department_names()
+    accessible_documents = [
+        {
+            "doc_id": d["doc_id"],
+            "title": d["title"],
+            "department": department_names.get(d["department_id"], d["department_id"]),
+            "allowed_groups": allowed_groups(d["doc_id"]),
+        }
+        for d in all_documents
+        if can_access(access_employee_id, d["doc_id"])
+    ]
 
     return {
         "employee": employee,
@@ -361,10 +348,9 @@ def collect_footprint_data(
             "total_threads": len(threads),
             "total_recurring_tasks": len(tasks),
             "total_related_clients": len(clients),
-            "total_accessible_documents": len(accessible_documents)
-        }
+            "total_accessible_documents": len(accessible_documents),
+        },
     }
-
 
 
 def extract_open_items_data(employee_id: str) -> dict:
@@ -443,6 +429,7 @@ def append_records(lines: list, title: str, records: list[dict]):
 @mcp.tool()
 def get_employee_info(employee_id: str) -> str:
     """Pobiera podstawowe informacje o pracowniku."""
+    _require_view(employee_id)
     employee = find_employee(employee_id)
     return format_result(employee)
 
@@ -454,16 +441,8 @@ def get_employee_info(employee_id: str) -> str:
 @mcp.tool()
 def get_employee_tickets(employee_id: str) -> str:
     """Pobiera zgłoszenia przypisane do pracownika."""
-    find_employee(employee_id)
-
-    tickets = load_csv("tickets.csv")
-
-    employee_tickets = [
-        ticket for ticket in tickets
-        if ticket["assigned_to"] == employee_id
-    ]
-
-    return format_result(employee_tickets)
+    _require_view(employee_id)
+    return format_result(collect_footprint_data(employee_id)["tickets"])          # w get_employee_tickets
 
 
 # --------------------------------------------------
@@ -473,16 +452,8 @@ def get_employee_tickets(employee_id: str) -> str:
 @mcp.tool()
 def get_employee_threads(employee_id: str) -> str:
     """Pobiera wątki komunikacyjne przypisane do pracownika."""
-    find_employee(employee_id)
-
-    threads = load_csv("threads.csv")
-
-    employee_threads = [
-        thread for thread in threads
-        if thread["assigned_to"] == employee_id
-    ]
-
-    return format_result(employee_threads)
+    _require_view(employee_id)
+    return format_result(collect_footprint_data(employee_id)["threads"])          # w get_employee_threads
 
 
 # --------------------------------------------------
@@ -492,16 +463,8 @@ def get_employee_threads(employee_id: str) -> str:
 @mcp.tool()
 def get_employee_recurring_tasks(employee_id: str) -> str:
     """Pobiera zadania cykliczne przypisane do pracownika."""
-    find_employee(employee_id)
-
-    tasks = load_csv("recurring_tasks.csv")
-
-    employee_tasks = [
-        task for task in tasks
-        if task["assigned_to"] == employee_id
-    ]
-
-    return format_result(employee_tasks)
+    _require_view(employee_id)
+    return format_result(collect_footprint_data(employee_id)["recurring_tasks"])  # w get_employee_recurring_tasks
 
 
 # --------------------------------------------------
@@ -514,6 +477,7 @@ def get_handover_overview(
     to_employee_id: str
 ) -> str:
     """Przygotowuje zbiorcze zestawienie danych do handover."""
+    _require_view(from_employee_id)
     source_employee = find_employee(from_employee_id)
     target_employee = find_employee(to_employee_id)
 
@@ -529,7 +493,7 @@ def get_handover_overview(
 
     return format_result({
         "process": "Handover",
-        "organization": "Nordwind Logistics",
+        "organization": "Northway Ltd.",
         "from_employee": source_employee,
         "to_employee": target_employee,
         "tickets": footprint["tickets"],
@@ -560,6 +524,7 @@ def collect_footprint(employee_id: str) -> str:
     Zbiera informacje o pracy pracownika:
     zgłoszenia, wątki, zadania cykliczne i klientów.
     """
+    _require_view(employee_id)
     footprint = collect_footprint_data(employee_id)
 
     return format_result({
@@ -579,6 +544,7 @@ def extract_open_items(employee_id: str) -> str:
     Wyodrębnia otwarte zgłoszenia, wątki do przejrzenia
     oraz zadania cykliczne wymagające kontynuacji.
     """
+    _require_view(employee_id)
     result = extract_open_items_data(employee_id)
 
     return format_result({
