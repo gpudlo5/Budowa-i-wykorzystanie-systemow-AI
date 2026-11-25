@@ -24,6 +24,9 @@ PROCESSED_DIR = DATA_DIR / "processed"
 DB_DIR = PROCESSED_DIR / "chroma_db"
 AUDIT_LOG = PROCESSED_DIR / "audit_log.jsonl"
 HANDOVER_DIR = PROCESSED_DIR / "handovers"
+INTERVIEW_DIR = PROCESSED_DIR / "interviews"
+ONBOARDING_DIR = PROCESSED_DIR / "onboarding"
+INTERVIEW_SCENARIO = DATA_DIR / "interview_scenario.json"
 
 # ---------------------------------------------------------------- baza wektorowa
 
