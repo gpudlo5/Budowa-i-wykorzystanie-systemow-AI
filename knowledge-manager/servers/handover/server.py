@@ -152,6 +152,12 @@ def interview_next_question(
     """
     Prowadzi wywiad z pracownikiem i zapisuje jego odpowiedzi.
     """
+    me = _current_user()
+    if me["employee_id"] != from_employee_id:
+        raise PermissionError(
+            "Na pytania wywiadu odpowiada pracownik przekazujacy - "
+            "serwer musi dzialac z jego KM_USER_ID."
+        )
 
     source_employee = find_employee(from_employee_id)
     target_employee = find_employee(to_employee_id)
@@ -171,14 +177,7 @@ def interview_next_question(
         r"[^a-zA-Z0-9_-]", "_", to_employee_id
     )
     
-    safe_from_id = re.sub(
-        r"[^a-zA-Z0-9_-]", "_", from_employee_id
-    )
-
-    safe_to_id = re.sub(
-        r"[^a-zA-Z0-9_-]", "_", to_employee_id
-    )
-
+    
     interview_file = (
         INTERVIEW_OUTPUT_DIR
         / f"interview_{safe_from_id}_to_{safe_to_id}.json"
@@ -568,7 +567,7 @@ def generate_handover_doc(
     Generuje dokument Markdown przekazania obowiązków.
     Dokument jest zapisywany w data/processed/handovers.
     """
-
+    _require_view(from_employee_id)
     source_employee = find_employee(from_employee_id)
     target_employee = find_employee(to_employee_id)
 
@@ -603,6 +602,10 @@ def generate_handover_doc(
         "completed": "Zakończone",
         "pending": "Oczekujące",
         "active": "Aktywne",
+        "otwarte": "Otwarte",
+        "zamknięte": "Zamknięte",
+        "w toku": "W toku",
+        "zakończony": "Zakończony",
     }
 
     priority_translations = {
@@ -702,51 +705,27 @@ def generate_handover_doc(
 
     clients = add_source_reference(
         footprint["related_clients"],
-        "client_id"
+        "counterparty_id"
     )
 
-    # Zestawienie terminów otwartych zgłoszeń i zadań.
+        # W danych nie ma terminow zgloszen; terminy zadan sa opisowe (sekcja 6).
     deadlines = []
-
-    for ticket in open_items["open_tickets"]:
-        if ticket.get("due_date"):
-            deadlines.append({
-                "type": "Zgłoszenie",
-                "ticket_id": ticket["ticket_id"],
-                "source_reference": f"ticket_id: {ticket['ticket_id']}",
-                "title": ticket.get("title", ""),
-                "due_date": ticket["due_date"],
-                "priority": ticket.get("priority", "")
-            })
-
-    for task in open_items["recurring_tasks_to_continue"]:
-        if task.get("due_date"):
-            deadlines.append({
-                "type": "Zadanie cykliczne",
-                "source_reference": f"task_id: {task['task_id']}",
-                "title": task.get("title", ""),
-                "due_date": task["due_date"],
-                "priority": task.get("priority", "")
-            })
-
-    deadlines.sort(key=lambda item: item["due_date"])
 
     # Sygnały wymagające uwagi na podstawie danych systemowych.
     attention_items = []
 
     for ticket in open_items["open_tickets"]:
-        if str(ticket.get("priority", "")).lower() == "high":
-            attention_items.append({
-                "type": "Zgłoszenie o wysokim priorytecie",
-                "source_reference": f"ticket_id: {ticket['ticket_id']}",
-                "description": ticket.get("title", ""),
-                "status": ticket.get("status", ""),
-                "due_date": ticket.get("due_date", "")
-            })
+        attention_items.append({
+            "type": "Otwarte zgłoszenie",
+            "source_reference": f"ticket_id: {ticket['ticket_id']}",
+            "description": ticket.get("title", ""),
+            "status": ticket.get("status", ""),
+        })
+
 
     for project in footprint["projects"]:
         if str(project.get("status", "")).lower() in (
-            "in_progress", "in progress"
+            "in_progress", "in progress", "w toku"
         ):
             attention_items.append({
                 "type": "Projekt w trakcie realizacji",
@@ -761,7 +740,7 @@ def generate_handover_doc(
     lines = [
         "# Dokument przekazania obowiązków",
         "",
-        "## Nordwind Logistics",
+        "## Northway Ltd.",
         "",
         "**Wersja:** 1.0",
         "**Typ dokumentu:** Dokument przekazania obowiązków",
@@ -777,27 +756,29 @@ def generate_handover_doc(
         f"| Pracownik przejmujący | {target_employee['first_name']} {target_employee['last_name']} |",
         f"| Identyfikator | {to_employee_id} |",
         f"| Data przekazania | Do uzupełnienia |",
-        f"| Data zakończenia pracy przez przekazującego | Do uzupełnienia |",
+        f"| Data zakończenia pracy przez przekazującego | {source_employee['end_date'] or 'Do uzupełnienia'} |",
+        f"| Przełożony | {org.label(source_employee['manager_id'])} |",
         "",
         "## 2. Zakres przekazywanych obowiązków",
         "",
-        "| Obowiązek | Częstotliwość | Priorytet | Uwagi |",
+        "| Obowiązek | Termin | Rola pracownika | Źródło |",
         "|---|---|---|---|",
     ]
 
     for task in recurring_tasks:
+        role = "Właściciel" if task.get("owner_id") == from_employee_id else "Współpracownik"
         lines.append(
-            f"| {task.get('title', '')} "
-            f"| {translate_frequency(task.get('frequency', 'Do potwierdzenia'))} "
-            f"| {translate_priority(task.get('priority', 'Do potwierdzenia'))} "
-            f"| Źródło: {task.get('source_reference', '')} |"
+            f"| {task.get('name', '')} "
+            f"| {task.get('deadline', 'Do potwierdzenia')} "
+            f"| {role} "
+            f"| {task.get('source_reference', '')} |"
         )
 
     lines.extend([
         "",
         "## 3. Sprawy w toku",
         "",
-        "| ID zgłoszenia | Sprawa | Status | Termin | Zalecane następne działanie |",
+        "| ID zgłoszenia | Sprawa | Status | Data zgłoszenia | Zalecane następne działanie |",
         "|---|---|---|---|---|",
     ])
 
@@ -806,7 +787,7 @@ def generate_handover_doc(
             f"| {ticket.get('ticket_id', '')} "
             f"| {ticket.get('title', '')} "
             f"| {translate_status(ticket.get('status', ''))} "
-            f"| {ticket.get('due_date', 'Brak terminu')} "
+            f"| {ticket.get('created_at', '')[:10]} "
             f"| Do ustalenia z przekazującym "
             f"({ticket.get('source_reference', '')}) |"
         )
@@ -815,22 +796,21 @@ def generate_handover_doc(
         "",
         "## 4. Kontakty i relacje biznesowe",
         "",
-        "| Klient | Osoba kontaktowa | Temat współpracy | Otwarte sprawy |",
+        "| Kontrahent | Opiekun w firmie | Uwagi | Otwarte sprawy |",
         "|---|---|---|---|",
     ])
 
     for client in clients:
-        client_id = client.get("client_id")
         client_tickets = [
-            ticket.get("ticket_id", "")
-            for ticket in open_tickets
-            if ticket.get("client_id") == client_id
+            t.get("ticket_id", "")
+            for t in open_tickets
+            if t.get("counterparty") == client.get("name")
         ]
         lines.append(
-            f"| {client.get('company_name', '')} "
-            f"| {client.get('contact_person', 'Do uzupełnienia')} "
-            f"| Do potwierdzenia "
-            f"| {', '.join(client_tickets) or 'Brak zarejestrowanych'} |"
+            f"| {client.get('name', '')} ({client.get('type', '')}) "
+            f"| {org.label(client.get('account_owner_id') or None)} "
+            f"| {client.get('notes', '') or 'Do potwierdzenia'} "
+            f"| {', '.join(client_tickets) or 'Brak otwartych'} |"
         )
 
     lines.extend([
@@ -841,22 +821,20 @@ def generate_handover_doc(
 
     if threads:
         lines.extend([
-            "| ID wątku | ID zgłoszenia | Klient | Temat rozmowy | Podsumowanie | Ostatnia wiadomość | Status |",
-            "|---|---|---|---|---|---|---|",
+            "| ID wątku | Kanał | Temat | Ostatnia wiadomość | Data |",
+            "|---|---|---|---|---|",
         ])
 
         for thread in threads:
+            last = thread["messages"][-1] if thread.get("messages") else {}
+            text = last.get("text", "").replace("|", "/")[:120]
             lines.append(
                 f"| {thread.get('thread_id', '')} "
-                f"| {thread.get('ticket_id', '')} "
-                f"| {thread.get('client_id', '')} "
-                f"| {thread.get('subject', '')} "
-                f"| {thread.get('summary', '')} "
-                f"| {thread.get('last_message_at', 'Brak daty')} "
-                f"| {translate_status(thread.get('status', 'Do potwierdzenia'))} |"
+                f"| {thread.get('channel', '')} "
+                f"| {thread.get('topic', '')} "
+                f"| {org.name_of(last.get('author_id'))}: {text} "
+                f"| {last.get('timestamp', '')[:10]} |"
             )
-    else:
-        lines.append("Brak wątków komunikacyjnych do przejrzenia.")
 
     lines.append("")
 
@@ -872,7 +850,7 @@ def generate_handover_doc(
         lines.append(
             f"| {doc.get('doc_id', '')} "
             f"| {doc.get('title', '')} "
-            f"| {doc.get('content', 'Brak opisu')} "
+            f"| {doc.get('key_facts', 'Brak opisu')} "
             f"| {doc.get('relation_to_employee', '')} |"
         )
 
@@ -905,7 +883,7 @@ def generate_handover_doc(
         "",
         "Pracownik przejmujący powinien zapoznać się z dokumentacją "
         "przed samodzielnym realizowaniem obowiązków.",
-        "Uprawnienia pracownika przejmującego sprawdzono na podstawie jego roli i wpisów w pliku ACL.",
+        "Uprawnienia pracownika przejmującego sprawdzono na podstawie jego grupy dostępu i kolumny allowed_groups w documents_plan.csv.",
         "",
         "## 6. Zadania cykliczne i nadchodzące terminy",
         "",
@@ -913,18 +891,18 @@ def generate_handover_doc(
 
     lines.extend([
         "",
-        "| ID | Nazwa zadania lub sprawy | Rodzaj | Częstotliwość | Termin | Priorytet |",
+        "| ID | Nazwa zadania lub sprawy | Rodzaj | Proces | Termin | Priorytet |",
         "|---|---|---|---|---|---|",
     ])
 
     for task in recurring_tasks:
         lines.append(
             f"| {task.get('task_id', '')} "
-            f"| {task.get('title', '')} "
+            f"| {task.get('name', '')} "
             f"| Zadanie cykliczne "
-            f"| {translate_frequency(task.get('frequency', ''))} "
-            f"| {task.get('due_date', 'Brak terminu')} "
-            f"| {translate_priority(task.get('priority', ''))} |"
+            f"| {task.get('process_id', '')} "
+            f"| {task.get('deadline', 'Brak terminu')} "
+            f"| — |"
         )
 
     for deadline in deadlines:
@@ -1024,33 +1002,31 @@ def generate_handover_doc(
         "",
         "### Pułapki i nieoczywiste zasady",
         "",
-        "- Przed zaksięgowaniem faktury należy sprawdzić jej zgodność "
-        "z zamówieniem i potwierdzeniem wykonania usługi. "
-        "W przypadku rozbieżności należy skontaktować się z dostawcą "
-        "przed zaksięgowaniem (źródło: D002).",
-        "",
-        "- Proces zamknięcia miesiąca obejmuje uzgodnienie sald "
-        "kontrahentów, weryfikację faktur i raport VAT "
-        "(źródło: D003).",
-        "",
-        "- W sprawie T003 oczekiwane jest potwierdzenie wykonania "
-        "usługi od klienta. Należy zweryfikować, czy dokument "
-        "został już dostarczony (źródła: T003, TH003).",
-        "",
-        "- Pracownik przejmujący ma dostęp do D002 i D003 na "
-        "podstawie przypisanej roli R_FINANCE oraz wpisów w ACL "
-        "(źródło: acl.csv).",
+        "Wiedza nieformalna przekazującego pochodzi z wywiadu - patrz sekcja 11.",
         "",
         "## 8. Rekomendacje dla pracownika przejmującego",
         "",
-        "1. W pierwszej kolejności przeanalizować zgłoszenia o wysokim priorytecie: T001, T002, T004 i T010.",
-        "2. Sprawdzić zgłoszenie T002, którego termin przypada na 2026-11-23.",
-        "3. W sprawie T003 zweryfikować, czy klient C003 przesłał brakujące potwierdzenie wykonania usługi (źródła: T003, TH003).",
-        "4. W sprawie T001 sprawdzić zgodność faktury FV/2026/101 z zamówieniem i potwierdzeniem wykonania usługi (źródła: T001, TH001, D002).",
-        "5. Zapoznać się z procedurą rozliczania faktur i instrukcją zamknięcia miesiąca (D002, D003).",
-        "6. Ustalić aktualny stan projektu P001 oraz uzgodnić, kto będzie odpowiedzialny za jego dalszą realizację.",
-        "7. Zweryfikować nadchodzące terminy zadań cyklicznych RT001–RT005.",
-        "8. Potwierdzić z Anną nieformalne ustalenia, kontakty z klientami i decyzje, których nie zapisano w systemie.",
+    ])
+
+    recommendations = [
+        f"Przejrzyj otwarte zgłoszenie {t['ticket_id']}: {t.get('title', '')}."
+        for t in open_tickets
+    ]
+    recommendations += [
+        f"Ustal stan projektu {p['project_id']} ({p.get('name', '')}) i osobę odpowiedzialną."
+        for p in projects
+        if str(p.get("status", "")).lower() in ("w toku", "in_progress", "in progress")
+    ]
+    recommendations += [
+        f"Przeczytaj dokument {d['doc_id']}: {d.get('title', '')}."
+        for d in handover_documents
+    ]
+    recommendations.append(
+        "Potwierdź z przekazującym nieformalne ustalenia z wywiadu (sekcja 11)."
+    )
+    lines.extend(f"{i}. {text}" for i, text in enumerate(recommendations, start=1))
+
+    lines.extend([
         "",
         "## 9. Potwierdzenie przekazania",
         "",
@@ -1058,7 +1034,7 @@ def generate_handover_doc(
         "|---|---|---|---|",
         f"| Przekazujący | {source_employee['first_name']} {source_employee['last_name']} | | |",
         f"| Przejmujący | {target_employee['first_name']} {target_employee['last_name']} | | |",
-        "| Przełożony | Do uzupełnienia | | |",
+        f"| Przełożony | {org.name_of(source_employee['manager_id'])} | | |",
         "",
         "## 10. Informacja o wykorzystaniu AI",
         "",
@@ -1148,32 +1124,62 @@ def generate_handover_doc(
 # --------------------------------------------------
 # NARZĘDZIE MCP – ZATWIERDZANIE DOKUMENTU
 # --------------------------------------------------
+def _confirmations_file(from_employee_id: str, to_employee_id: str) -> Path:
+    return HANDOVER_OUTPUT_DIR / f"handover_{from_employee_id}_to_{to_employee_id}_confirmations.json"
+
+
+@mcp.tool()
+def confirm_handover_doc(from_employee_id: str, to_employee_id: str) -> str:
+    """
+    Biezacy uzytkownik (pracownik przekazujacy albo przejmujacy) potwierdza,
+    ze zapoznal sie z dokumentem przekazania. Kazda strona potwierdza we wlasnej sesji.
+    """
+    find_employee(from_employee_id)
+    find_employee(to_employee_id)
+    me = _current_user()
+    if me["employee_id"] not in (from_employee_id, to_employee_id):
+        raise PermissionError(
+            "Potwierdzic dokument moze tylko pracownik przekazujacy albo przejmujacy."
+        )
+
+    document_file = HANDOVER_OUTPUT_DIR / f"handover_{from_employee_id}_to_{to_employee_id}.md"
+    if not document_file.exists():
+        raise FileNotFoundError("Najpierw wygeneruj dokument (generate_handover_doc).")
+
+    conf_file = _confirmations_file(from_employee_id, to_employee_id)
+    confirmations = json.loads(conf_file.read_text(encoding="utf-8")) if conf_file.exists() else {}
+    confirmations[me["employee_id"]] = datetime.now(timezone.utc).isoformat()
+    conf_file.write_text(json.dumps(confirmations, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    missing = [e for e in (from_employee_id, to_employee_id) if e not in confirmations]
+    return format_result({
+        "status": "confirmed",
+        "confirmed_by": me["employee_id"],
+        "missing_confirmations": missing,
+    })
 
 @mcp.tool()
 def approve_handover_doc(
     from_employee_id: str,
-    to_employee_id: str,
-    from_employee_confirmed: bool,
-    to_employee_confirmed: bool,
-    approved_by_employee_id: str
-) -> str:
-    """Rejestruje potwierdzenia stron i zatwierdzenie dokumentu."""
-
+    to_employee_id: str
+    ) -> str:
+    """
+    Zatwierdza dokument przekazania. Wykonuje to przelozony pracownika przekazujacego
+    (biezacy uzytkownik), po potwierdzeniu dokumentu przez obie strony (confirm_handover_doc).
+    """
     source_employee = find_employee(from_employee_id)
     target_employee = find_employee(to_employee_id)
-    approver = find_employee(approved_by_employee_id)
+    me = _require_manager_of(from_employee_id)
 
     if source_employee["department"] != target_employee["department"]:
         raise ValueError("Pracownicy należą do różnych działów.")
 
-    if approver["department"] != source_employee["department"]:
+    conf_file = _confirmations_file(from_employee_id, to_employee_id)
+    confirmations = json.loads(conf_file.read_text(encoding="utf-8")) if conf_file.exists() else {}
+    missing = [e for e in (from_employee_id, to_employee_id) if e not in confirmations]
+    if missing:
         raise ValueError(
-            "Osoba zatwierdzająca musi należeć do tego samego działu."
-        )
-
-    if not from_employee_confirmed or not to_employee_confirmed:
-        raise ValueError(
-            "Obie strony muszą potwierdzić zapoznanie się z dokumentem."
+            f"Brak potwierdzen: {', '.join(missing)}. Kazda strona uzywa confirm_handover_doc."
         )
 
     safe_from_id = re.sub(
@@ -1232,11 +1238,12 @@ def approve_handover_doc(
         "status": "approved",
         "from_employee": from_employee_id,
         "to_employee": to_employee_id,
-        "from_employee_confirmed": True,
-        "to_employee_confirmed": True,
-        "approved_by": approved_by_employee_id,
+        "from_employee_confirmed_at": confirmations[from_employee_id],
+        "to_employee_confirmed_at": confirmations[to_employee_id],
+        "approved_by": me["employee_id"],
         "approved_at": datetime.now(timezone.utc).isoformat(),
-        "identity_verified": False
+        "identity_verified": False,
+        "identity_note": "Tozsamosc z KM_USER_ID (konfiguracja serwera), bez uwierzytelniania.",
     }
 
     status_file.write_text(
@@ -1247,7 +1254,7 @@ def approve_handover_doc(
     return format_result({
         "status": "approved",
         "message": "Dokument został zatwierdzony.",
-        "approved_by": approved_by_employee_id,
+        "approved_by": me["employee_id"],
         "status_file": str(status_file.relative_to(BASE_DIR))
     })
 
@@ -1265,6 +1272,7 @@ def publish_to_onboarding(
 
     source_employee = find_employee(from_employee_id)
     target_employee = find_employee(to_employee_id)
+    _require_manager_of(from_employee_id)
 
     if source_employee["department"] != target_employee["department"]:
         raise ValueError("Pracownicy należą do różnych działów.")
@@ -1331,7 +1339,7 @@ def publish_to_onboarding(
     inaccessible_documents = [
         doc_id
         for doc_id in referenced_documents
-        if not check_access(to_employee_id, doc_id)
+        if not can_access(to_employee_id, doc_id)
     ]
 
     if inaccessible_documents:
